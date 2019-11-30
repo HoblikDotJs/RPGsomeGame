@@ -1,16 +1,21 @@
-class Player {
-  constructor(name, items) {
-    this.name = name; // name
+class newPlayer {
+  constructor(name, password, items) {
+    this.name = name;
+    this.password = password;
     this.lvl = 0;
-    this.backpack = [];
+    this.gold = 0;
+    this.messages = [];
+
     this.startingCharacter = {
-      hp: 20,
-      damage: 10,
-      armor: 10,
+      hp: 25,
+      damage: 20,
+      armor: 5,
       luck: 50,
       weight: 70,
     }
+
     this.character = this.startingCharacter;
+
     if (items) {
       this.slots = items;
     } else {
@@ -22,7 +27,42 @@ class Player {
         neck: new EmptySlot(),
       }
     }
+  }
+
+}
+
+class Player {
+  constructor(obj) {
+    this.startingCharacter = obj.startingCharacter;
+    this.character = this.startingCharacter;
+    this.gold = obj.gold;
+    this.lvl = obj.lvl;
+    this.name = obj.name;
+    this.password = obj.password;
+    this.slots = obj.slots;
+    this.backpack = obj.backpack || [];
+    this.messages = obj.messages || [];
+    this.readMessages();
     this.apply();
+  }
+
+
+
+  updateStats(stat) {
+    for (let i = 0; i < Object.keys(this.startingCharacter).length; i++) {
+      if (Object.keys(this.startingCharacter)[i] == stat) {
+        let price = this.startingCharacter[stat] //* 10;
+        let ans = prompt("Do you really want to update " + stat + " for " + price + " gold y/n");
+        if (ans == "y" && this.gold >= price) {
+          console.log("Updating " + stat);
+          this.startingCharacter[stat] += 2;
+          this.gold -= price;
+          this.saveState();
+        } else {
+          console.log("Nothing");
+        }
+      }
+    }
   }
 
   show() { // show the items 
@@ -33,18 +73,61 @@ class Player {
     }
   }
 
+  saveState() {
+    firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
+    firebase.database().ref("users/" + this.name + "/character").set(this.character);
+    firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
+    firebase.database().ref("users/" + this.name + "/lvl").set(this.lvl);
+    firebase.database().ref("users/" + this.name + "/slots").set(this.slots);
+    firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
+  }
+
   putOn(object) {
     if (this.backpack.indexOf(object) != -1) {
       let prevItem = this.slots[object.slot];
       this.slots[object.slot] = object;
       this.backpack.splice(this.backpack.indexOf(object), 1);
       this.backpack.push(prevItem);
-      this.character = this.startingCharacter;
+      //this.character = this.startingCharacter;
       this.apply();
       console.log("You just putted " + object.name + " on.")
     } else {
       console.log("You must have the item in backpack.");
+      console.log(this.backpack);
     }
+  }
+
+  readMessages() {
+    for (let i = 0; i < this.messages.length; i++) {
+      console.log(this.messages[i]);
+    }
+    this.messages = [];
+  }
+
+
+
+  fightInArena() {
+    function pickRandomEnemy(obj, me) {
+      delete obj[me];
+      let names = Object.keys(obj);
+      let other = Math.floor(Math.random() * names.length);
+      let index = names[other];
+      console.log("Found " + index);
+      return obj[index];
+    }
+    firebase.database().ref("users").once("value").then((u) => {
+      let userObj = u.val();
+      let enemy = pickRandomEnemy(userObj, this.name);
+      if (this.attack(enemy)) {
+        this.gold += 10;
+        this.saveState();
+      } else {
+        firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
+          return gold += 10
+        });
+        firebase.database().ref("users/" + enemy.name + "/messages").push("You won battle with " + this.name);
+      }
+    });
   }
 
   fightNext() {
@@ -54,12 +137,15 @@ class Player {
       if (this.attack(enemies[this.lvl])) {
         this.backpack.push(enemies[this.lvl].reward);
         console.log("You won " + enemies[this.lvl].reward.name);
+        console.log("You won " + enemies[this.lvl].character.gold + " gold");
         this.lvl++;
+        this.gold += enemies[this.lvl].character.gold;
       }
     }
   }
 
   apply() { // applies all the properties of items to the character property
+
     for (const item in this.slots) {
       for (const property in this.character) {
         if (this.slots[item].properties[property] && this.character[property]) {
@@ -70,6 +156,7 @@ class Player {
     }
     console.log(this.slots);
     console.log(this.character);
+    console.log(this.startingCharacter);
     // console.log(this.name + " ------------------------------------------------------------------------------")
   }
 

@@ -1,6 +1,32 @@
 <html>
 
 <head>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+
+  <script>
+    let database;
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAjlO1gWuv6GbTW0_J55RGp_iwYKTW-vgo",
+      authDomain: "rpgsomegame.firebaseapp.com",
+      databaseURL: "https://rpgsomegame.firebaseio.com",
+      projectId: "rpgsomegame",
+      storageBucket: "rpgsomegame.appspot.com",
+      messagingSenderId: "880509021911",
+      appId: "1:880509021911:web:ced5bbdb8e229e81c04a92",
+      measurementId: "G-N1887F8VLX"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    database = firebase.database();
+  </script>
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script> no need to draw anything so I can use vanilla JS-->
   <script src="items/bodies/body.js"></script>
   <script src="items/bodies/chainArmor.js"></script>
