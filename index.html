@@ -1,6 +1,7 @@
 <html>
 
 <head>
+
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
 
@@ -27,7 +28,6 @@
     firebase.analytics();
     database = firebase.database();
   </script>
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script> no need to draw anything so I can use vanilla JS-->
   <script src="items/bodies/body.js"></script>
   <script src="items/bodies/chainArmor.js"></script>
   <script src="items/arms/arm.js"></script>
@@ -41,10 +41,35 @@
   <script>
     setup();
   </script>
-  <!--  <script src="libraries/p5.collide2d.js"></script>-->
 </head>
 
 <body>
+
+  <div id="logButtons">
+    <button id="in" class="bl" onclick="signIn()" type="button">Sign In</button>
+    <button id="up" class="bl" onclick="signUp()" type="button">Sign Up</button>
+  </div>
+  <div id="buttons">
+    <div id="sbar"></div>
+  </div>
+  <style>
+    .bl {
+      display: block;
+      height: 3%;
+      margin-bottom: 3%;
+      margin-top: 2%;
+      margin-left: 3%;
+    }
+
+    .sel {
+      height: 3%;
+      margin-bottom: 3%;
+      margin-top: 2%;
+      margin-left: 3%;
+    }
+  </style>
 </body>
 
 </html>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script> no need to draw anything so I can use vanilla JS-->
+<!--  <script src="libraries/p5.collide2d.js"></script>-->
