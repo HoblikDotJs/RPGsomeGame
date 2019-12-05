@@ -13,6 +13,8 @@ class newPlayer {
       armor: 5,
       luck: 50,
       weight: 70,
+      regeneration: 0,
+      magicResistance: 5
     }
 
     this.character = this.startingCharacter;
@@ -67,13 +69,6 @@ class Player {
     }
   }
 
-  show() { // show the items 
-    for (const item in this.slots) {
-      if (this.slots[item].show) {
-        this.slots[item].show();
-      }
-    }
-  }
 
   saveState() {
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);

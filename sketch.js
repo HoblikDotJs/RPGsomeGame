@@ -10,8 +10,6 @@ function setup() {
 	enemies = [wolf, wiz, giant];
 }
 
-
-
 function signIn() {
 	let myName = prompt("What is your name?");
 	let password = prompt("What is your password?");
@@ -33,7 +31,6 @@ function signIn() {
 	});
 }
 
-
 function signUp() {
 	myName = prompt("What will be your name?");
 	password = prompt("What will be your password?"); //add some encryption later!!
@@ -44,7 +41,6 @@ function signUp() {
 		console.log("signUp was ok");
 	});
 }
-
 
 function loadWorld() {
 	let titles = ["Arena", "Monsters", "Player", "HallOfFame"];
@@ -57,7 +53,6 @@ function loadWorld() {
 		child.addEventListener("click", functions[i]);
 		parent.appendChild(child);
 	}
-
 	makeSelect();
 	putOnButton();
 }
@@ -89,7 +84,6 @@ function makeSelect(select) {
 	}
 	parent.appendChild(select);
 }
-
 
 function showBestPlayers() {
 	let bestPlayers = [];
