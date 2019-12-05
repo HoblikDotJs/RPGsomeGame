@@ -1,12 +1,11 @@
 class newPlayer {
-  constructor(name, password, items) {
+  constructor(name, password) {
     this.name = name;
     this.password = password;
     this.lvl = 0;
     this.gold = 0;
     this.fame = 0;
     this.messages = [];
-
     this.startingCharacter = {
       hp: 25,
       damage: 20,
@@ -16,22 +15,15 @@ class newPlayer {
       regeneration: 0,
       magicResistance: 5
     }
-
     this.character = this.startingCharacter;
-
-    if (items) {
-      this.slots = items;
-    } else {
-      this.slots = { // Slots for items
-        body: new EmptySlot(),
-        leftArm: new EmptySlot(),
-        rightArm: new EmptySlot(),
-        ringFinger: new EmptySlot(),
-        neck: new EmptySlot(),
-      }
+    this.slots = {
+      body: new EmptySlot(),
+      leftArm: new EmptySlot(),
+      rightArm: new EmptySlot(),
+      ringFinger: new EmptySlot(),
+      neck: new EmptySlot(),
     }
   }
-
 }
 
 class Player {
@@ -169,6 +161,8 @@ class Player {
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
+        console.log(this.name + "regenerated" + this.character.regeneration);
+        this.character.hp += this.character.regeneration;
         let critMul = Math.random() * 10;
         othersHp -= (this.character.damage - others.character.armor) * critMul;
         console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor) * critMul) + " damage.")
@@ -188,8 +182,10 @@ class Player {
       } else {
         console.log(this.name + " missed");
       }
-
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if ((Math.random() * 100) < others.character.luck / (Math.random() * 20)) {
+        others.character.hp += others.character.regeneration;
+        console.log(others.name + "regenerated" + others.character.regeneration);
         let critMul = Math.random() * 10;
         yourHp -= (others.character.damage - this.character.armor) * critMul;
         console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor) * critMul) + " damage.")
