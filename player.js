@@ -17,15 +17,14 @@ class newPlayer {
     }
     this.character = this.startingCharacter;
     this.slots = {
-      body: new EmptySlot(),
-      leftArm: new EmptySlot(),
-      rightArm: new EmptySlot(),
-      ringFinger: new EmptySlot(),
-      neck: new EmptySlot(),
+      body: weapons.body.EmptyBody,
+      leftArm: weapons.leftArm.EmptyLeftArm,
+      rightArm: weapons.rightArm.EmptyRightArm,
+      ringFinger: weapons.ring.EmptyRing,
+      neck: weapons.neck.EmptyNeck,
     }
   }
 }
-
 class Player {
   constructor(obj) {
     this.startingCharacter = obj.startingCharacter;
@@ -63,6 +62,7 @@ class Player {
 
 
   saveState() {
+    firebase.database().ref("users/" + this.name + "/startingCharacter").set(this.startingCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
     firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
@@ -93,8 +93,6 @@ class Player {
     }
     this.messages = [];
   }
-
-
 
   fightInArena() {
     function pickRandomEnemy(obj, me) {
@@ -132,8 +130,10 @@ class Player {
         this.backpack.push(enemies[this.lvl].reward);
         console.log("You won " + enemies[this.lvl].reward.name);
         console.log("You won " + enemies[this.lvl].character.gold + " gold");
-        this.lvl++;
         this.gold += enemies[this.lvl].character.gold;
+        this.lvl++;
+        refreshSelect();
+        this.saveState();
       }
     }
   }
@@ -142,14 +142,14 @@ class Player {
     for (const item in this.slots) {
       for (const property in this.character) {
         if (this.slots[item].properties[property] && this.character[property]) {
-          this.character[property] += this.slots[item].properties[property];
+          this.character[property] += parseInt(this.slots[item].properties[property]);
           // console.log("Added to " + item + " a " + property + " from " + this.slots[item].name, this.character);
         }
       }
     }
-    console.log(this.slots);
-    console.log(this.character);
-    console.log(this.startingCharacter);
+    // console.log(this.slots);
+    // console.log(this.character);
+    // console.log(this.startingCharacter);
     // console.log(this.name + " ------------------------------------------------------------------------------")
   }
 

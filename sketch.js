@@ -1,13 +1,14 @@
-let player;
-let enemies;
-let myName;
-let password;
+let weapons, player, enemies, myName, password, select, putOnBtn;
 let logged = false;
 let signedUp = false;
-let select;
+
 
 function setup() {
-	enemies = [wolf, wiz, giant];
+	$.getJSON("weapons.json", function (json) {
+		weapons = json;
+		loadEnemies();
+		enemies = [wolf, wiz, giant];
+	});
 }
 
 function signIn() {
@@ -57,34 +58,6 @@ function loadWorld() {
 	putOnButton();
 }
 
-function putOnButton() {
-	let putOnBtn = document.createElement("BUTTON");
-	putOnBtn.innerHTML = "putOn";
-	putOnBtn.classList.add("sel");
-	putOnBtn.addEventListener("click", putOn);
-	document.getElementById("buttons").appendChild(putOnBtn);
-}
-
-function putOn() {
-	var result = document.getElementById("selectId").options[document.getElementById("selectId").selectedIndex].value;
-	player.putOn(player.backpack[result]);
-}
-
-function makeSelect(select) {
-	let parent = document.getElementById("buttons");
-	select = document.createElement("SELECT");
-	select.classList.add("sel");
-	select.setAttribute("id", "selectId");
-	for (let i = 0; i < player.backpack.length; i++) {
-		let option = document.createElement("option");
-		option.setAttribute("value", i);
-		let t = document.createTextNode(player.backpack[i].name);
-		option.appendChild(t);
-		select.appendChild(option);
-	}
-	parent.appendChild(select);
-}
-
 function showBestPlayers() {
 	let bestPlayers = [];
 	firebase.database().ref("users").on("value", function (snapshot) {
@@ -112,4 +85,29 @@ function arenaFight() {
 
 function fightMonsters() {
 	player.fightNext();
+}
+
+function makeSelect() {
+	select = $("<select>").appendTo("#selector");
+	select.addClass("sel");
+	select.mouseover(refreshSelect);
+	refreshSelect();
+}
+
+function putOnButton() {
+	putOnBtn = $("<button>").appendTo("#selector");
+	putOnBtn.addClass("sel");
+	putOnBtn.html("Put on");
+	putOnBtn.click(() => {
+		let index = select.val();
+		player.putOn(player.backpack[index]);
+		refreshSelect();
+	})
+}
+
+function refreshSelect() {
+	select.empty();
+	for (let i = 0; i < player.backpack.length; i++) {
+		select.append($("<option>").html(player.backpack[i].name).val(i));
+	}
 }

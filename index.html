@@ -9,11 +9,12 @@
      https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
   <script>
-    let database;
     // Your web app's Firebase configuration
     var firebaseConfig = {
+
       apiKey: "AIzaSyAjlO1gWuv6GbTW0_J55RGp_iwYKTW-vgo",
       authDomain: "rpgsomegame.firebaseapp.com",
       databaseURL: "https://rpgsomegame.firebaseio.com",
@@ -23,17 +24,10 @@
       appId: "1:880509021911:web:ced5bbdb8e229e81c04a92",
       measurementId: "G-N1887F8VLX"
     };
-    // Initialize Firebase
+    // Initialize Fireb  ase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-    database = firebase.database();
   </script>
-  <script src="items/bodies/body.js"></script>
-  <script src="items/bodies/chainArmor.js"></script>
-  <script src="items/arms/arm.js"></script>
-  <script src="items/rings/ring.js"></script>
-  <script src="items/necklaces/necklace.js"></script>
-  <script src="items/emptySlot.js"></script>
   <script src="enemy.js"></script>
   <script src="enemies/wolf.js"></script>
   <script src="player.js"></script>
@@ -50,8 +44,8 @@
     <button id="up" class="bl" onclick="signUp()" type="button">Sign Up</button>
   </div>
   <div id="buttons">
-    <div id="sbar"></div>
   </div>
+  <span id="selector"> </span>
   <style>
     .bl {
       display: block;
@@ -62,9 +56,8 @@
     }
 
     .sel {
+      display: inline;
       height: 3%;
-      margin-bottom: 3%;
-      margin-top: 2%;
       margin-left: 3%;
     }
   </style>

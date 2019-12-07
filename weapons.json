@@ -1,0 +1,110 @@
+{
+  "body": {
+    "EmptyBody": {
+      "name": "EmptyBody",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "body"
+    }
+  },
+  "head": {
+    "EmptyHead": {
+      "name": "EmptyHead",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "head"
+    }
+  },
+  "leftArm": {
+    "Berserker": {
+      "name": "Berserker",
+      "properties": {
+        "armor": "5",
+        "damage": "300",
+        "hp": "18",
+        "luck": "-15",
+        "magicResistance": "7",
+        "weight": "30"
+      },
+      "slot": "leftArm"
+    },
+    "EmptyLeftArm": {
+      "name": "EmptyLeftArm",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "leftArm"
+    }
+  },
+  "neck": {
+    "EmptyNeck": {
+      "name": "EmptyNeck",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "neck"
+    }
+  },
+  "rightArm": {
+    "Angelic Pillar": {
+      "name": "Angelic Pillar",
+      "properties": {
+        "armor": "25",
+        "damage": "500",
+        "hp": "10",
+        "luck": "-50",
+        "magicResistance": "30",
+        "weight": "60"
+      },
+      "slot": "rightArm"
+    },
+    "EmptyRightArm": {
+      "name": "EmptyRightArm",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "rightArm"
+    },
+    "Gratia ": {
+      "name": "Gratia ",
+      "properties": {
+        "damage": "100",
+        "luck": "-17",
+        "weight": "3"
+      },
+      "slot": "rightArm"
+    },
+    "Jäger": {
+      "name": "Jäger",
+      "properties": {
+        "damage": "120",
+        "hp": "5",
+        "luck": "20",
+        "magicResistance": "15",
+        "regen": "2",
+        "weight": "2"
+      },
+      "slot": "rightArm"
+    }
+  },
+  "ring": {
+    "EmptyRing": {
+      "name": "EmptyRing",
+      "properties": {
+        "luck": "1"
+      },
+      "slot": "ring"
+    },
+    "Ring of Gluttony": {
+      "name": "Ring of Gluttony",
+      "properties": {
+        "luck": "-20",
+        "regen": "15",
+        "weight": "1"
+      },
+      "slot": "ring"
+    }
+  }
+}
