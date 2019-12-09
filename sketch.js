@@ -1,4 +1,4 @@
-let weapons, player, enemies, myName, password, select, putOnBtn;
+let monsterS, monsterM, arenaS, arenaM, weapons, player, enemies, myName, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
 let logged = false;
 let signedUp = false;
 
@@ -45,18 +45,57 @@ function signUp() {
 }
 
 function loadWorld() {
-	let titles = ["Arena", "Monsters", "Player", "HallOfFame"];
-	let functions = [arenaFight, fightMonsters, showPlayer, showBestPlayers];
-	let parent = document.getElementById("buttons");
-	for (let i = 0; i < titles.length; i++) {
-		let child = document.createElement("BUTTON");
-		child.innerHTML = titles[i];
-		child.classList.add("bl");
-		child.addEventListener("click", functions[i]);
-		parent.appendChild(child);
-	}
+	let parent = $("#buttons");
+	arenaBtn = $("<button class= 'bl' id='arenaId'>Arena</button>").click(arenaFight);
+	monsterBtn = $("<button class= 'bl' id='monsterId'>Monsters</button>").click(fightMonsters);
+	playerBtn = $("<button class= 'bl' id='arenaId'>Player</button>").click(showPlayer);
+	fameBtn = $("<button class= 'bl' id='arenaId'>Hall Of Fame</button>").click(showBestPlayers);
+	arenaBtn.hover(showArenaTime, showArenaTitle);
+	monsterBtn.hover(showMonsterTime, showMonsterTitle);
+	parent.append(arenaBtn);
+	parent.append(monsterBtn);
+	parent.append(playerBtn);
+	parent.append(fameBtn);
 	makeSelect();
 	putOnButton();
+}
+
+function showMonsterTime() {
+	firebase.database().ref("users/" + player.name + "/times/monsters").once("value", (data) => {
+		let oldTime = data.val();
+		let newTime = Date.parse(new Date());
+		if (newTime - oldTime > 600000) {
+			monsterBtn.html("Ready!");
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000;
+			monsterM = Math.floor(time / 60);
+			monsterS = Math.floor(time - monsterM * 60);
+			monsterBtn.html(monsterM + " : " + monsterS);
+		}
+	})
+}
+
+function showMonsterTitle() {
+	monsterBtn.html("Monsters");
+}
+
+function showArenaTime() {
+	firebase.database().ref("users/" + player.name + "/times/arena").once("value", (data) => {
+		let oldTime = data.val();
+		let newTime = Date.parse(new Date());
+		if (newTime - oldTime > 600000) {
+			arenaBtn.html("Ready!");
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000
+			arenaM = Math.floor(time / 60);
+			arenaS = Math.floor(time - arenaM * 60);
+			arenaBtn.html(arenaM + " : " + arenaS);
+		}
+	})
+}
+
+function showArenaTitle() {
+	arenaBtn.html("Arena");
 }
 
 function showBestPlayers() {

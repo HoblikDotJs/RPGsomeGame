@@ -35,9 +35,9 @@ class newPlayer {
       neck: weapons.neck.EmptyNeck,
     }
     this.times = {
-      arena: 1111111111111111111111111111111,
-      monsters: 11111111111111111111111111111,
-      quest: 111111111111111111111111111111111111,
+      arena: 0,
+      monsters: 0,
+      quest: 0,
     }
   }
 }
@@ -136,8 +136,9 @@ class Player {
   fightInArena() {
     firebase.database().ref("users/" + this.name + "/times/arena").on("value", (data) => {
       let oldDate = data.val();
-      let thisDate = Date.parse(new Date());
-      if (oldDate - thisDate > 600000) {
+      let newDate = Date.parse(new Date());
+      if (newDate - oldDate > 600000) {
+
         function pickRandomEnemy(obj, me) {
           delete obj[me];
           let names = Object.keys(obj);
@@ -146,6 +147,7 @@ class Player {
           console.log("Found " + index);
           return obj[index];
         }
+
         firebase.database().ref("users").once("value").then((u) => {
           let userObj = u.val();
           let enemy = pickRandomEnemy(userObj, this.name);
@@ -166,7 +168,7 @@ class Player {
         this.saveState();
         firebase.database().ref("users/" + this.name + "/times/arena").set(this.times.arena);
       } else {
-        console.log("You must wait");
+        console.log("You must wait " + arenaM + ":" + arenaS);
       }
     });
   }
@@ -175,7 +177,7 @@ class Player {
     firebase.database().ref("users/" + this.name + "/times/monsters").on("value", (data) => {
       let oldDate = data.val();
       let thisDate = Date.parse(new Date());
-      if (oldDate - thisDate > 600000) {
+      if (thisDate - oldDate > 600000) {
         if (this.lvl >= enemies.length) {
           console.log("No enemies left");
         } else {
@@ -192,7 +194,7 @@ class Player {
           firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
       } else {
-        console.log("You need to wait");
+        console.log("You need to wait " + monsterM + ":" + monsterS);
       }
     });
   }
