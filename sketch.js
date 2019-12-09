@@ -23,6 +23,7 @@ function signIn() {
 				document.getElementById("logButtons").removeChild(document.getElementById("in"));
 				document.getElementById("logButtons").removeChild(document.getElementById("up"));
 			}
+			alert("Open your console with F12");
 			logged = true;
 			loadWorld();
 			console.log("You've been logged as " + myName);

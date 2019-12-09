@@ -48,8 +48,8 @@
     }
   },
   "rightArm": {
-    "Angelic Pillar": {
-      "name": "Angelic Pillar",
+    "AngelicPillar": {
+      "name": "AngelicPillar",
       "properties": {
         "armor": "25",
         "damage": "500",
@@ -67,8 +67,8 @@
       },
       "slot": "rightArm"
     },
-    "Gratia ": {
-      "name": "Gratia ",
+    "Gratia": {
+      "name": "Gratia",
       "properties": {
         "damage": "100",
         "luck": "-17",
@@ -76,8 +76,8 @@
       },
       "slot": "rightArm"
     },
-    "Jäger": {
-      "name": "Jäger",
+    "Jager": {
+      "name": "Jager",
       "properties": {
         "damage": "120",
         "hp": "5",
@@ -97,8 +97,8 @@
       },
       "slot": "ring"
     },
-    "Ring of Gluttony": {
-      "name": "Ring of Gluttony",
+    "RingOfGluttony": {
+      "name": "RingOfGluttony",
       "properties": {
         "luck": "-20",
         "regen": "15",

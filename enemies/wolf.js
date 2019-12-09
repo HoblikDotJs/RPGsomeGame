@@ -8,8 +8,8 @@ function loadEnemies() {
     luck: 15,
     weight: 40,
     gold: 10,
-    regeneration: 0,
-  }, weapons.leftArm.Berserker);
+    regen: 0,
+  }, weapons.ring["RingOfGluttony"]);
 
   giant = new Enemy("Giant", {
     hp: 200,
@@ -18,8 +18,8 @@ function loadEnemies() {
     luck: 10,
     weight: 700,
     gold: 20,
-    regeneration: 0,
-  }, weapons.leftArm.Berserker);
+    regen: 0,
+  }, weapons.leftArm["Berserker"]);
 
   wiz = new Enemy("Wiz", {
     hp: 40,
@@ -28,6 +28,6 @@ function loadEnemies() {
     luck: 99,
     weight: 60,
     gold: 30,
-    regeneration: 0,
-  }, weapons.leftArm.Berserker);
+    regen: 0,
+  }, weapons.rightArm["Jager"]);
 }

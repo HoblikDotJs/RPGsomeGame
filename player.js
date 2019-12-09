@@ -1,3 +1,14 @@
+let baseCharacter = {
+  hp: 25,
+  damage: 20,
+  armor: 5,
+  luck: 50,
+  weight: 70,
+  regen: 0,
+  magicResistance: 5
+}
+
+
 class newPlayer {
   constructor(name, password) {
     this.name = name;
@@ -6,29 +17,34 @@ class newPlayer {
     this.gold = 0;
     this.fame = 0;
     this.messages = [];
-    this.startingCharacter = {
-      hp: 25,
-      damage: 20,
-      armor: 5,
-      luck: 50,
-      weight: 70,
-      regeneration: 0,
-      magicResistance: 5
+    this.character = baseCharacter;
+    this.upgradeCharacter = {
+      hp: 0,
+      damage: 0,
+      armor: 0,
+      luck: 0,
+      weight: 0,
+      regen: 0,
+      magicResistance: 0,
     }
-    this.character = this.startingCharacter;
     this.slots = {
       body: weapons.body.EmptyBody,
       leftArm: weapons.leftArm.EmptyLeftArm,
       rightArm: weapons.rightArm.EmptyRightArm,
-      ringFinger: weapons.ring.EmptyRing,
+      ring: weapons.ring.EmptyRing,
       neck: weapons.neck.EmptyNeck,
+    }
+    this.times = {
+      arena: 1111111111111111111111111111111,
+      monsters: 11111111111111111111111111111,
+      quest: 111111111111111111111111111111111111,
     }
   }
 }
 class Player {
   constructor(obj) {
-    this.startingCharacter = obj.startingCharacter;
-    this.character = this.startingCharacter;
+    this.upgradeCharacter = obj.upgradeCharacter;
+    this.character = baseCharacter;
     this.gold = obj.gold;
     this.lvl = obj.lvl;
     this.name = obj.name;
@@ -38,19 +54,41 @@ class Player {
     this.backpack = obj.backpack || [];
     this.messages = obj.messages || [];
     this.readMessages();
-    this.apply();
+    this.calculateCharacter();
+    this.times = obj.times; // arena, monster, quest?
   }
 
-
+  calculateCharacter() {
+    this.character = {
+      hp: 25,
+      damage: 20,
+      armor: 5,
+      luck: 50,
+      weight: 70,
+      regen: 0,
+      magicResistance: 5
+    };
+    for (let property in this.character) {
+      this.character[property] += this.upgradeCharacter[property];
+    }
+    for (const item in this.slots) {
+      for (const property in this.character) {
+        if (this.slots[item].properties[property] && this.character[property]) {
+          this.character[property] += parseInt(this.slots[item].properties[property]);
+        }
+      }
+    }
+    this.saveState();
+  }
 
   updateStats(stat) {
-    for (let i = 0; i < Object.keys(this.startingCharacter).length; i++) {
-      if (Object.keys(this.startingCharacter)[i] == stat) {
-        let price = this.startingCharacter[stat] * 5;
+    for (let i = 0; i < Object.keys(this.upgradeCharacter).length; i++) {
+      if (Object.keys(this.upgradeCharacter)[i] == stat) {
+        let price = this.upgradeCharacter[stat] * 5;
         let ans = prompt("Do you really want to update " + stat + " for " + price + " gold y/n");
         if (ans == "y" && this.gold >= price) {
           console.log("Updating " + stat);
-          this.startingCharacter[stat] += 2;
+          this.upgradeCharacter[stat] += 2;
           this.gold -= price;
           this.saveState();
         } else {
@@ -62,7 +100,7 @@ class Player {
 
 
   saveState() {
-    firebase.database().ref("users/" + this.name + "/startingCharacter").set(this.startingCharacter);
+    firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
     firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
@@ -70,6 +108,7 @@ class Player {
     firebase.database().ref("users/" + this.name + "/fame").set(this.fame);
     firebase.database().ref("users/" + this.name + "/slots").set(this.slots);
     firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
+
   }
 
   putOn(object) {
@@ -78,9 +117,9 @@ class Player {
       this.slots[object.slot] = object;
       this.backpack.splice(this.backpack.indexOf(object), 1);
       this.backpack.push(prevItem);
-      this.character = this.startingCharacter;
-      this.apply();
-      console.log("You just putted " + object.name + " on.")
+      this.calculateCharacter();
+      console.log("You just putted " + object.name + " on.");
+      console.log(this.character);
     } else {
       console.log("You must have the item in backpack.");
       console.log(this.backpack);
@@ -95,62 +134,67 @@ class Player {
   }
 
   fightInArena() {
-    function pickRandomEnemy(obj, me) {
-      delete obj[me];
-      let names = Object.keys(obj);
-      let other = Math.floor(Math.random() * names.length);
-      let index = names[other];
-      console.log("Found " + index);
-      return obj[index];
-    }
-    firebase.database().ref("users").once("value").then((u) => {
-      let userObj = u.val();
-      let enemy = pickRandomEnemy(userObj, this.name);
-      if (this.attack(enemy)) {
-        this.gold += 10;
-        this.fame += 1;
+    firebase.database().ref("users/" + this.name + "/times/arena").on("value", (data) => {
+      let oldDate = data.val();
+      let thisDate = Date.parse(new Date());
+      if (oldDate - thisDate > 600000) {
+        function pickRandomEnemy(obj, me) {
+          delete obj[me];
+          let names = Object.keys(obj);
+          let other = Math.floor(Math.random() * names.length);
+          let index = names[other];
+          console.log("Found " + index);
+          return obj[index];
+        }
+        firebase.database().ref("users").once("value").then((u) => {
+          let userObj = u.val();
+          let enemy = pickRandomEnemy(userObj, this.name);
+          if (this.attack(enemy)) {
+            this.gold += 10;
+            this.fame += 1;
+          } else {
+            firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
+              return gold += 10;
+            });
+            firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
+              return fame += 1;
+            });
+            firebase.database().ref("users/" + enemy.name + "/messages").push("You won battle with " + this.name);
+          }
+        });
+        this.times.arena = Date.parse(new Date());
         this.saveState();
+        firebase.database().ref("users/" + this.name + "/times/arena").set(this.times.arena);
       } else {
-        firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
-          return gold += 10;
-        });
-        firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
-          return fame += 1;
-        });
-        firebase.database().ref("users/" + enemy.name + "/messages").push("You won battle with " + this.name);
+        console.log("You must wait");
       }
     });
   }
 
   fightNext() {
-    if (this.lvl >= enemies.length) {
-      console.log("No enemies left");
-    } else {
-      if (this.attack(enemies[this.lvl])) {
-        this.backpack.push(enemies[this.lvl].reward);
-        console.log("You won " + enemies[this.lvl].reward.name);
-        console.log("You won " + enemies[this.lvl].character.gold + " gold");
-        this.gold += enemies[this.lvl].character.gold;
-        this.lvl++;
-        refreshSelect();
-        this.saveState();
-      }
-    }
-  }
-
-  apply() { // applies all the properties of items to the character property
-    for (const item in this.slots) {
-      for (const property in this.character) {
-        if (this.slots[item].properties[property] && this.character[property]) {
-          this.character[property] += parseInt(this.slots[item].properties[property]);
-          // console.log("Added to " + item + " a " + property + " from " + this.slots[item].name, this.character);
+    firebase.database().ref("users/" + this.name + "/times/monsters").on("value", (data) => {
+      let oldDate = data.val();
+      let thisDate = Date.parse(new Date());
+      if (oldDate - thisDate > 600000) {
+        if (this.lvl >= enemies.length) {
+          console.log("No enemies left");
+        } else {
+          if (this.attack(enemies[this.lvl])) {
+            this.backpack.push(enemies[this.lvl].reward);
+            console.log("You won " + enemies[this.lvl].reward.name);
+            console.log("You won " + enemies[this.lvl].character.gold + " gold");
+            this.gold += enemies[this.lvl].character.gold;
+            this.lvl++;
+            refreshSelect();
+            this.saveState();
+          }
+          this.times.monsters = Date.parse(new Date());
+          firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
+      } else {
+        console.log("You need to wait");
       }
-    }
-    // console.log(this.slots);
-    // console.log(this.character);
-    // console.log(this.startingCharacter);
-    // console.log(this.name + " ------------------------------------------------------------------------------")
+    });
   }
 
   attack(others) {
@@ -161,8 +205,8 @@ class Player {
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
-        console.log(this.name + "regenerated" + this.character.regeneration);
-        this.character.hp += this.character.regeneration;
+        console.log(this.name + " regenerated " + this.character.regen + " hp");
+        this.character.hp += this.character.regen;
         let critMul = Math.random() * 10;
         othersHp -= (this.character.damage - others.character.armor) * critMul;
         console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor) * critMul) + " damage.")
@@ -184,8 +228,8 @@ class Player {
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if ((Math.random() * 100) < others.character.luck / (Math.random() * 20)) {
-        others.character.hp += others.character.regeneration;
-        console.log(others.name + "regenerated" + others.character.regeneration);
+        others.character.hp += others.character.regen;
+        console.log(others.name + " regenerated " + others.character.regen + " hp");
         let critMul = Math.random() * 10;
         yourHp -= (others.character.damage - this.character.armor) * critMul;
         console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor) * critMul) + " damage.")
