@@ -4,7 +4,7 @@ let baseCharacter = {
   armor: 5,
   luck: 50,
   weight: 70,
-  regen: 0,
+  regen: 1,
   magicResistance: 5
 }
 
@@ -65,7 +65,7 @@ class Player {
       armor: 5,
       luck: 50,
       weight: 70,
-      regen: 0,
+      regen: 1,
       magicResistance: 5
     };
     for (let property in this.character) {
@@ -73,6 +73,7 @@ class Player {
     }
     for (const item in this.slots) {
       for (const property in this.character) {
+        console.log(this.slots[item].properties[property], this.character[property])
         if (this.slots[item].properties[property] && this.character[property]) {
           this.character[property] += parseInt(this.slots[item].properties[property]);
         }
@@ -168,7 +169,11 @@ class Player {
         this.saveState();
         firebase.database().ref("users/" + this.name + "/times/arena").set(this.times.arena);
       } else {
-        console.log("You must wait " + arenaM + ":" + arenaS);
+        if (arenaM && arenaS) {
+          console.log("You must wait " + arenaM + ":" + arenaS);
+        } else {
+          console.log("You must wait");
+        }
       }
     });
   }
@@ -194,7 +199,11 @@ class Player {
           firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
       } else {
-        console.log("You need to wait " + monsterM + ":" + monsterS);
+        if (monsterS && monsterM) {
+          console.log("You need to wait " + monsterM + ":" + monsterS);
+        } else {
+          console.log("You need to wait");
+        }
       }
     });
   }
