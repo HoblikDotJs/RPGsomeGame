@@ -1,18 +1,12 @@
 <html>
 
 <head>
-
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
-
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
   <script>
-    // Your web app's Firebase configuration
     var firebaseConfig = {
 
       apiKey: "AIzaSyAjlO1gWuv6GbTW0_J55RGp_iwYKTW-vgo",
@@ -24,7 +18,6 @@
       appId: "1:880509021911:web:ced5bbdb8e229e81c04a92",
       measurementId: "G-N1887F8VLX"
     };
-    // Initialize Fireb  ase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
   </script>
@@ -38,7 +31,6 @@
 </head>
 
 <body>
-
   <div id="logButtons">
     <button id="in" class="bl" onclick="signIn()" type="button">Sign In</button>
     <button id="up" class="bl" onclick="signUp()" type="button">Sign Up</button>
