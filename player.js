@@ -8,7 +8,6 @@ let baseCharacter = {
   magicResistance: 5
 };
 
-
 class newPlayer {
   constructor(name, password) {
     this.name = name;
