@@ -6,7 +6,7 @@ let baseCharacter = {
   weight: 70,
   regen: 1,
   magicResistance: 5
-}
+};
 
 
 class newPlayer {
