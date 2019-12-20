@@ -28,11 +28,11 @@ class newPlayer {
       magicResistance: 0,
     }
     this.slots = {
-      body: weapons.body.EmptyBody,
-      leftArm: weapons.leftArm.EmptyLeftArm,
-      rightArm: weapons.rightArm.EmptyRightArm,
-      ring: weapons.ring.EmptyRing,
-      neck: weapons.neck.EmptyNeck,
+      body: weapons.body["Nothing"],
+      leftArm: weapons.leftArm["Nothing"],
+      rightArm: weapons.rightArm["Nothing"],
+      ring: weapons.ring["Nothing"],
+      neck: weapons.neck["Nothing"],
     }
     this.times = {
       arena: 0,
@@ -73,7 +73,7 @@ class Player {
     }
     for (const item in this.slots) {
       for (const property in this.character) {
-        console.log(this.slots[item].properties[property], this.character[property])
+        // console.log(this.slots[item].properties[property], this.character[property])
         if (this.slots[item].properties[property] && this.character[property]) {
           this.character[property] += parseInt(this.slots[item].properties[property]);
         }
@@ -211,7 +211,7 @@ class Player {
   attack(others) {
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
-    console.log(this.name + " attacked " + others.name);
+    //console.log(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)

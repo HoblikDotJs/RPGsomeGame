@@ -1,110 +1,384 @@
 {
-  "body": {
-    "EmptyBody": {
-      "name": "EmptyBody",
-      "properties": {
-        "luck": "1"
+  "body" : {
+    "Angelic Armor" : {
+      "name" : "Angelic Armor",
+      "price" : "500000",
+      "properties" : {
+        "armor" : "14",
+        "damage" : "10",
+        "hp" : "30",
+        "luck" : "-15",
+        "magicResistance" : "10",
+        "regen" : "5",
+        "weight" : "50"
       },
-      "slot": "body"
+      "slot" : "body"
+    },
+    "Common Armor" : {
+      "name" : "Common Armor",
+      "price" : "5000",
+      "properties" : {
+        "armor" : "6",
+        "damage" : "4",
+        "hp" : "5",
+        "luck" : "7",
+        "magicResistance" : "4",
+        "regen" : "2",
+        "weight" : "10"
+      },
+      "slot" : "body"
+    },
+    "Northern Armor" : {
+      "name" : "Northern Armor",
+      "price" : "6000",
+      "properties" : {
+        "armor" : "10",
+        "damage" : "8",
+        "hp" : "8",
+        "luck" : "0",
+        "magicResistance" : "10",
+        "regen" : "4",
+        "weight" : "16"
+      },
+      "slot" : "body"
+    },
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
+      },
+      "slot" : "body"
+    },
+    "Old Leather Clothes" : {
+      "name" : "Old Leather Clothes",
+      "price" : "1000",
+      "properties" : {
+        "armor" : "2",
+        "damage" : "2",
+        "hp" : "2",
+        "luck" : "2",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "6"
+      },
+      "slot" : "body"
+    },
+    "Silver Armor" : {
+      "name" : "Silver Armor",
+      "price" : "250000",
+      "properties" : {
+        "armor" : "12",
+        "damage" : "5",
+        "hp" : "5",
+        "luck" : "5",
+        "magicResistance" : "7",
+        "regen" : "2",
+        "weight" : "20"
+      },
+      "slot" : "body"
     }
   },
-  "head": {
-    "EmptyHead": {
-      "name": "EmptyHead",
-      "properties": {
-        "luck": "1"
+  "head" : {
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
       },
-      "slot": "head"
+      "slot" : "head"
     }
   },
-  "leftArm": {
-    "Berserker": {
-      "name": "Berserker",
-      "properties": {
-        "armor": "5",
-        "damage": "300",
-        "hp": "18",
-        "luck": "-15",
-        "magicResistance": "7",
-        "weight": "30"
+  "leftArm" : {
+    "Gargoyle's Axe" : {
+      "name" : "Gargoyle's Axe",
+      "price" : "150000",
+      "properties" : {
+        "armor" : "5",
+        "damage" : "200",
+        "hp" : "7",
+        "luck" : "-7",
+        "magicResistance" : "7",
+        "regen" : "0",
+        "weight" : "12"
       },
-      "slot": "leftArm"
+      "slot" : "leftArm"
     },
-    "EmptyLeftArm": {
-      "name": "EmptyLeftArm",
-      "properties": {
-        "luck": "1"
+    "Jäger" : {
+      "name" : "Jäger",
+      "price" : "7000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "120",
+        "hp" : "5",
+        "luck" : "15",
+        "magicResistance" : "12",
+        "regen" : "2",
+        "weight" : "2"
       },
-      "slot": "leftArm"
+      "slot" : "leftArm"
+    },
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
+      },
+      "slot" : "leftArm"
+    },
+    "Silver Sabre" : {
+      "name" : "Silver Sabre",
+      "price" : "400000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "170",
+        "hp" : "8",
+        "luck" : "10",
+        "magicResistance" : "10",
+        "regen" : "2",
+        "weight" : "5"
+      },
+      "slot" : "leftArm"
     }
   },
-  "neck": {
-    "EmptyNeck": {
-      "name": "EmptyNeck",
-      "properties": {
-        "luck": "1"
+  "neck" : {
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
       },
-      "slot": "neck"
+      "slot" : "neck"
     }
   },
-  "rightArm": {
-    "AngelicPillar": {
-      "name": "AngelicPillar",
-      "properties": {
-        "armor": "25",
-        "damage": "500",
-        "hp": "10",
-        "luck": "-50",
-        "magicResistance": "30",
-        "weight": "60"
+  "rightArm" : {
+    "Angelic Pillar" : {
+      "name" : "Angelic Pillar",
+      "price" : "25000",
+      "properties" : {
+        "armor" : "11",
+        "damage" : "500",
+        "hp" : "10",
+        "luck" : "-50",
+        "magicResistance" : "10",
+        "regen" : "0",
+        "weight" : "60"
       },
-      "slot": "rightArm"
+      "slot" : "rightArm"
     },
-    "EmptyRightArm": {
-      "name": "EmptyRightArm",
-      "properties": {
-        "luck": "1"
+    "Berserker" : {
+      "name" : "Berserker",
+      "price" : "10000",
+      "properties" : {
+        "armor" : "5",
+        "damage" : "300",
+        "hp" : "18",
+        "luck" : "-15",
+        "magicResistance" : "7",
+        "regen" : "0",
+        "weight" : "30"
       },
-      "slot": "rightArm"
+      "slot" : "rightArm"
     },
-    "Gratia": {
-      "name": "Gratia",
-      "properties": {
-        "damage": "100",
-        "luck": "-17",
-        "weight": "3"
+    "Gratia" : {
+      "name" : "Gratia",
+      "price" : "100",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "100",
+        "hp" : "0",
+        "luck" : "-17",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "3"
       },
-      "slot": "rightArm"
+      "slot" : "rightArm"
     },
-    "Jager": {
-      "name": "Jager",
-      "properties": {
-        "damage": "120",
-        "hp": "5",
-        "luck": "20",
-        "magicResistance": "15",
-        "regen": "2",
-        "weight": "2"
+    "Morning Star" : {
+      "name" : "Morning Star",
+      "price" : "70000",
+      "properties" : {
+        "armor" : "3",
+        "damage" : "270",
+        "hp" : "15",
+        "luck" : "-5",
+        "magicResistance" : "3",
+        "regen" : "2",
+        "weight" : "15"
       },
-      "slot": "rightArm"
+      "slot" : "rightArm"
+    },
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
+      },
+      "slot" : "rightArm"
+    },
+    "Old Twinblade" : {
+      "name" : "Old Twinblade",
+      "price" : "500",
+      "properties" : {
+        "armor" : "2",
+        "damage" : "20",
+        "hp" : "0",
+        "luck" : "5",
+        "magicResistance" : "3",
+        "regen" : "1",
+        "weight" : "4"
+      },
+      "slot" : "rightArm"
+    },
+    "Platinum flame" : {
+      "name" : "Platinum flame",
+      "price" : "300000",
+      "properties" : {
+        "armor" : "5",
+        "damage" : "150",
+        "hp" : "10",
+        "luck" : "-15",
+        "magicResistance" : "5",
+        "regen" : "7",
+        "weight" : "20"
+      },
+      "slot" : "rightArm"
+    },
+    "Rusty Sword" : {
+      "name" : "Rusty Sword",
+      "price" : "50",
+      "properties" : {
+        "armor" : "6",
+        "damage" : "15",
+        "hp" : "2",
+        "luck" : "0",
+        "magicResistance" : "2",
+        "regen" : "2",
+        "weight" : "3"
+      },
+      "slot" : "rightArm"
+    },
+    "Scythe with Thorns" : {
+      "name" : "Scythe with Thorns",
+      "price" : "600000",
+      "properties" : {
+        "armor" : "-5",
+        "damage" : "250",
+        "hp" : "-15",
+        "luck" : "17",
+        "magicResistance" : "-5",
+        "regen" : "-10",
+        "weight" : "6"
+      },
+      "slot" : "rightArm"
     }
   },
-  "ring": {
-    "EmptyRing": {
-      "name": "EmptyRing",
-      "properties": {
-        "luck": "1"
+  "ring" : {
+    "Nothing" : {
+      "name" : "Nothing",
+      "price" : "0",
+      "properties" : {
+        "luck" : "1"
       },
-      "slot": "ring"
+      "slot" : "ring"
     },
-    "RingOfGluttony": {
-      "name": "RingOfGluttony",
-      "properties": {
-        "luck": "-20",
-        "regen": "15",
-        "weight": "1"
+    "Ring of Envy" : {
+      "name" : "Ring of Envy",
+      "price" : "400000",
+      "properties" : {
+        "armor" : "5",
+        "damage" : "5",
+        "hp" : "5",
+        "luck" : "5",
+        "magicResistance" : "5",
+        "regen" : "5",
+        "weight" : "10"
       },
-      "slot": "ring"
+      "slot" : "ring"
+    },
+    "Ring of Gluttony" : {
+      "name" : "Ring of Gluttony",
+      "price" : "100000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "0",
+        "hp" : "0",
+        "luck" : "-50",
+        "magicResistance" : "0",
+        "regen" : "20",
+        "weight" : "1"
+      },
+      "slot" : "ring"
+    },
+    "Ring of Greed" : {
+      "name" : "Ring of Greed",
+      "price" : "500000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "0",
+        "hp" : "0",
+        "luck" : "20",
+        "magicResistance" : "-50",
+        "regen" : "0",
+        "weight" : "2"
+      },
+      "slot" : "ring"
+    },
+    "Ring of Lust" : {
+      "name" : "Ring of Lust",
+      "price" : "300000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "-50",
+        "hp" : "0",
+        "luck" : "0",
+        "magicResistance" : "20",
+        "regen" : "0",
+        "weight" : "1"
+      },
+      "slot" : "ring"
+    },
+    "Ring of Pride" : {
+      "name" : "Ring of Pride",
+      "price" : "700000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "0",
+        "hp" : "150",
+        "luck" : "0",
+        "magicResistance" : "0",
+        "regen" : "-50",
+        "weight" : "2"
+      },
+      "slot" : "ring"
+    },
+    "Ring of Sloth" : {
+      "name" : "Ring of Sloth",
+      "price" : "200000",
+      "properties" : {
+        "armor" : "20",
+        "damage" : "0",
+        "hp" : "0",
+        "luck" : "-50",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "5"
+      },
+      "slot" : "ring"
+    },
+    "Ring of Wrath" : {
+      "name" : "Ring of Wrath",
+      "price" : "600000",
+      "properties" : {
+        "armor" : "-50",
+        "damage" : "100",
+        "hp" : "0",
+        "luck" : "0",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "5"
+      },
+      "slot" : "ring"
     }
   }
 }

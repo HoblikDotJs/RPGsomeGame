@@ -9,7 +9,7 @@ function loadEnemies() {
     weight: 40,
     gold: 10,
     regen: 0,
-  }, weapons.ring["RingOfGluttony"]);
+  }, weapons.ring["Ring of Gluttony"]);
 
   giant = new Enemy("Giant", {
     hp: 200,
@@ -29,5 +29,5 @@ function loadEnemies() {
     weight: 60,
     gold: 30,
     regen: 0,
-  }, weapons.rightArm["Jager"]);
+  }, weapons.ring["Ring of Lust"]);
 }
