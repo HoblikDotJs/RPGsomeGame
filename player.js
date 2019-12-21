@@ -17,6 +17,7 @@ class newPlayer {
     this.fame = 0;
     this.messages = [];
     this.character = baseCharacter;
+    this.shopItems = [];
     this.upgradeCharacter = {
       hp: 0,
       damage: 0,
@@ -37,6 +38,7 @@ class newPlayer {
       arena: 0,
       monsters: 0,
       quest: 0,
+      shop: 0,
     }
   }
 }
@@ -52,9 +54,11 @@ class Player {
     this.slots = obj.slots;
     this.backpack = obj.backpack || [];
     this.messages = obj.messages || [];
+    this.shopItems = obj.shopItems;
+    this.times = obj.times; // arena, monster, quest, shop;
     this.readMessages();
     this.calculateCharacter();
-    this.times = obj.times; // arena, monster, quest?
+
   }
 
   calculateCharacter() {
@@ -72,7 +76,6 @@ class Player {
     }
     for (const item in this.slots) {
       for (const property in this.character) {
-        // console.log(this.slots[item].properties[property], this.character[property])
         if (this.slots[item].properties[property] && this.character[property]) {
           this.character[property] += parseInt(this.slots[item].properties[property]);
         }
@@ -81,6 +84,37 @@ class Player {
     this.saveState();
   }
 
+  showShop() {
+    firebase.database().ref("users/" + this.name + "/times/shop").on("value", (data) => {
+      let oldDate = data.val();
+      let newDate = Date.parse(new Date());
+      if (newDate - oldDate > 600000) {
+        this.shopItems = [];
+        let shoppingWeapons = [];
+        for (let part in weapons) {
+          for (let item in weapons[part]) {
+            if (weapons[part][item].name != "Nothing") {
+              shoppingWeapons.push(weapons[part][item]);
+            }
+          }
+        }
+        for (let i = 0; i < 3; i++) {
+          let randomIndex = Math.floor(Math.random() * shoppingWeapons.length);
+          this.shopItems.push(shoppingWeapons[randomIndex]);
+          shoppingWeapons.splice(randomIndex, 1);
+        }
+        firebase.database().ref("users/" + this.name + "/shopItems").set(this.shopItems);
+        this.times.shop = Date.parse(new Date());
+        firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
+      } else {
+        if (shopS && shopM) {
+          console.log("You need to wait " + shopM + ":" + shopS);
+        } else {
+          console.log("You need to wait");
+        }
+      }
+    });
+  }
   updateStats(stat) {
     for (let i = 0; i < Object.keys(this.upgradeCharacter).length; i++) {
       if (Object.keys(this.upgradeCharacter)[i] == stat) {
@@ -98,7 +132,6 @@ class Player {
     }
   }
 
-
   saveState() {
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
@@ -108,7 +141,6 @@ class Player {
     firebase.database().ref("users/" + this.name + "/fame").set(this.fame);
     firebase.database().ref("users/" + this.name + "/slots").set(this.slots);
     firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
-
   }
 
   putOn(object) {
@@ -138,7 +170,6 @@ class Player {
       let oldDate = data.val();
       let newDate = Date.parse(new Date());
       if (newDate - oldDate > 600000) {
-
         function pickRandomEnemy(obj, me) {
           delete obj[me];
           let names = Object.keys(obj);
