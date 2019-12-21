@@ -1,4 +1,216 @@
 {
+  "Monsters" : {
+    "Abaddon the Sin of Wrath" : {
+      "character" : {
+        "armor" : "0",
+        "damage" : "120",
+        "hp" : "9500",
+        "luck" : "60",
+        "magicResistance" : "20",
+        "regen" : "20",
+        "weight" : "3500"
+      },
+      "gold" : "1500000",
+      "lvl" : 6,
+      "name" : "Abaddon the Sin of Wrath",
+      "reward" : "Ring of Wrath"
+    },
+    "Asmodeus the Sin of Lust" : {
+      "character" : {
+        "armor" : "0",
+        "damage" : "50",
+        "hp" : "2000",
+        "luck" : "75",
+        "magicResistance" : "70",
+        "regen" : "15",
+        "weight" : "80"
+      },
+      "gold" : "50000",
+      "lvl" : 3,
+      "name" : "Asmodeus the Sin of Lust",
+      "reward" : "Ring of Lust"
+    },
+    "Azrael the Virtue of Patience" : {
+      "character" : {
+        "armor" : "20",
+        "damage" : "20",
+        "hp" : "11500",
+        "luck" : "25",
+        "magicResistance" : "25",
+        "regen" : "-10",
+        "weight" : "100"
+      },
+      "gold" : "3500000",
+      "lvl" : 9,
+      "name" : "Azrael the Virtue of Patience",
+      "reward" : "Helmet with Four Eyes"
+    },
+    "Belphegor the Sin of Sloth" : {
+      "character" : {
+        "armor" : "40",
+        "damage" : "15",
+        "hp" : "1000",
+        "luck" : "30",
+        "magicResistance" : "30",
+        "regen" : "10",
+        "weight" : "500"
+      },
+      "gold" : "10000",
+      "lvl" : 2,
+      "name" : "Belphegor the Sin of Sloth",
+      "reward" : "Ring of Sloth"
+    },
+    "Belzebub the Sin of Gluttony" : {
+      "character" : {
+        "armor" : "10",
+        "damage" : "25",
+        "hp" : "150",
+        "luck" : "50",
+        "magicResistance" : "0",
+        "regen" : "20",
+        "weight" : "5000"
+      },
+      "gold" : "3000",
+      "lvl" : 1,
+      "name" : "Belzebub the Sin of Gluttony",
+      "reward" : "Ring of Gluttony"
+    },
+    "Cassiel the Virtue of Temperance" : {
+      "character" : {
+        "armor" : "40",
+        "damage" : "110",
+        "hp" : "15000",
+        "luck" : "40",
+        "magicResistance" : "30",
+        "regen" : "15",
+        "weight" : "150"
+      },
+      "gold" : "8000000",
+      "lvl" : 14,
+      "name" : "Cassiel the Virtue of Temperance",
+      "reward" : "Cassiel's Belt"
+    },
+    "Gabriel the Virtue of Diligence" : {
+      "character" : {
+        "armor" : "10",
+        "damage" : "200",
+        "hp" : "14000",
+        "luck" : "50",
+        "magicResistance" : "10",
+        "regen" : "-20",
+        "weight" : "2500"
+      },
+      "gold" : "7000000",
+      "lvl" : 13,
+      "name" : "Gabriel the Virtue of Diligence",
+      "reward" : "Gabriel's Skull"
+    },
+    "Leviathan the Sin of Envy" : {
+      "character" : {
+        "armor" : "20",
+        "damage" : "50",
+        "hp" : "9000",
+        "luck" : "10",
+        "magicResistance" : "25",
+        "regen" : "7",
+        "weight" : "4000"
+      },
+      "gold" : "500000",
+      "lvl" : 4,
+      "name" : "Leviathan the Sin of Envy",
+      "reward" : "Ring of Envy"
+    },
+    "Lucifer the Sin of Pride" : {
+      "character" : {
+        "armor" : "50",
+        "damage" : "95",
+        "hp" : "12000",
+        "luck" : "70",
+        "magicResistance" : "30",
+        "regen" : "-10",
+        "weight" : "2000"
+      },
+      "gold" : "2000000",
+      "lvl" : 7,
+      "name" : "Lucifer the Sin of Pride",
+      "reward" : "Ring of Pride"
+    },
+    "Mammon the Sin of Greed" : {
+      "character" : {
+        "armor" : "5",
+        "damage" : "40",
+        "hp" : "5000",
+        "luck" : "100",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "1000"
+      },
+      "gold" : "1000000",
+      "lvl" : 5,
+      "name" : "Mammon the Sin of Greed",
+      "reward" : "Ring of Greed"
+    },
+    "Michael the Virtue of Charity" : {
+      "character" : {
+        "armor" : "45",
+        "damage" : "150",
+        "hp" : "13000",
+        "luck" : "60",
+        "magicResistance" : "0",
+        "regen" : "30",
+        "weight" : "300"
+      },
+      "gold" : "4000000",
+      "lvl" : 10,
+      "name" : "Michael the Virtue of Charity",
+      "reward" : "Michael's Dress"
+    },
+    "Ramiel the Virtue of Kindness" : {
+      "character" : {
+        "armor" : "65",
+        "damage" : "100",
+        "hp" : "14000",
+        "luck" : "70",
+        "magicResistance" : "40",
+        "regen" : "-70",
+        "weight" : "400"
+      },
+      "gold" : "5000000",
+      "lvl" : 11,
+      "name" : "Ramiel the Virtue of Kindness",
+      "reward" : "Halo of Kindness"
+    },
+    "Raphael the Virtue of Humility" : {
+      "character" : {
+        "armor" : "60",
+        "damage" : "130",
+        "hp" : "11000",
+        "luck" : "5",
+        "magicResistance" : "50",
+        "regen" : "5",
+        "weight" : "200"
+      },
+      "gold" : "3000000",
+      "lvl" : 8,
+      "name" : "Raphael the Virtue of Humility",
+      "reward" : "Angel's Wing"
+    },
+    "Uriel the Virtue of Chastity" : {
+      "character" : {
+        "armor" : "85",
+        "damage" : "120",
+        "hp" : "9000",
+        "luck" : "30",
+        "magicResistance" : "-30",
+        "regen" : "-20",
+        "weight" : "50"
+      },
+      "gold" : "6000000",
+      "lvl" : 12,
+      "name" : "Uriel the Virtue of Chastity",
+      "reward" : "Black Thread"
+    }
+  },
   "body" : {
     "Angelic Armor" : {
       "name" : "Angelic Armor",
@@ -25,6 +237,20 @@
         "magicResistance" : "4",
         "regen" : "2",
         "weight" : "10"
+      },
+      "slot" : "body"
+    },
+    "Michael's Dress" : {
+      "name" : "Michael's Dress",
+      "price" : "1500000",
+      "properties" : {
+        "armor" : "20",
+        "damage" : "50",
+        "hp" : "10",
+        "luck" : "10",
+        "magicResistance" : "0",
+        "regen" : "-10",
+        "weight" : "7"
       },
       "slot" : "body"
     },
@@ -80,6 +306,20 @@
     }
   },
   "head" : {
+    "Helmet with Four Eyes" : {
+      "name" : "Helmet with Four Eyes",
+      "price" : "1000000",
+      "properties" : {
+        "armor" : "20",
+        "damage" : "0",
+        "hp" : "75",
+        "luck" : "0",
+        "magicResistance" : "25",
+        "regen" : "0",
+        "weight" : "5"
+      },
+      "slot" : "head"
+    },
     "Nothing" : {
       "name" : "Nothing",
       "price" : "0",
@@ -90,6 +330,34 @@
     }
   },
   "leftArm" : {
+    "Angel's Wing" : {
+      "name" : "Angel's Wing",
+      "price" : "1000000",
+      "properties" : {
+        "armor" : "20",
+        "damage" : "500",
+        "hp" : "100",
+        "luck" : "5",
+        "magicResistance" : "0",
+        "regen" : "5",
+        "weight" : "20"
+      },
+      "slot" : "leftArm"
+    },
+    "Black Thread" : {
+      "name" : "Black Thread",
+      "price" : "2000000",
+      "properties" : {
+        "armor" : "80",
+        "damage" : "250",
+        "hp" : "8",
+        "luck" : "20",
+        "magicResistance" : "-10",
+        "regen" : "-70",
+        "weight" : "30"
+      },
+      "slot" : "leftArm"
+    },
     "Gargoyle's Axe" : {
       "name" : "Gargoyle's Axe",
       "price" : "150000",
@@ -177,6 +445,20 @@
         "magicResistance" : "7",
         "regen" : "0",
         "weight" : "30"
+      },
+      "slot" : "rightArm"
+    },
+    "Gabriel's Skull" : {
+      "name" : "Gabriel's Skull",
+      "price" : "2500000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "700",
+        "hp" : "0",
+        "luck" : "0",
+        "magicResistance" : "0",
+        "regen" : "0",
+        "weight" : "50"
       },
       "slot" : "rightArm"
     },
@@ -274,6 +556,34 @@
     }
   },
   "ring" : {
+    "Cassiel's Belt" : {
+      "name" : "Cassiel's Belt",
+      "price" : "3000000",
+      "properties" : {
+        "armor" : "30",
+        "damage" : "50",
+        "hp" : "20",
+        "luck" : "20",
+        "magicResistance" : "30",
+        "regen" : "20",
+        "weight" : "1"
+      },
+      "slot" : "ring"
+    },
+    "Halo of Kindness" : {
+      "name" : "Halo of Kindness",
+      "price" : "1700000",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "40",
+        "hp" : "5",
+        "luck" : "2",
+        "magicResistance" : "30",
+        "regen" : "-15",
+        "weight" : "1"
+      },
+      "slot" : "ring"
+    },
     "Nothing" : {
       "name" : "Nothing",
       "price" : "0",

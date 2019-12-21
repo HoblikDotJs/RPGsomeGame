@@ -55,7 +55,7 @@ class Player {
     this.backpack = obj.backpack || [];
     this.messages = obj.messages || [];
     this.shopItems = obj.shopItems;
-    this.times = obj.times; // arena, monster, quest, shop;
+    this.times = obj.times;
     this.readMessages();
     this.calculateCharacter();
   }
@@ -93,7 +93,7 @@ class Player {
         let shoppingWeapons = [];
         for (let part in weapons) {
           for (let item in weapons[part]) {
-            if (weapons[part][item].name != "Nothing") {
+            if (weapons[part][item].name != "Nothing" && part != "Monsters") {
               shoppingWeapons.push(weapons[part][item]);
             }
           }
@@ -237,10 +237,18 @@ class Player {
           console.log("No enemies left");
         } else {
           if (this.attack(enemies[this.lvl])) {
-            this.backpack.push(enemies[this.lvl].reward);
-            console.log("You won " + enemies[this.lvl].reward.name);
-            console.log("You won " + enemies[this.lvl].character.gold + " gold");
-            this.gold += enemies[this.lvl].character.gold;
+            let drop = enemies[this.lvl].reward;
+            let slot;
+            console.log(drop);
+            for (let part in weapons) {
+              if (weapons[part][drop]) {
+                slot = part;
+              }
+            }
+            this.backpack.push(weapons[slot][drop]);
+            console.log("You won " + enemies[this.lvl].reward);
+            console.log("You won " + enemies[this.lvl].gold + " gold");
+            this.gold += enemies[this.lvl].gold;
             this.lvl++;
             refreshSelect();
             this.saveState();
@@ -261,7 +269,7 @@ class Player {
   attack(others) {
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
-    //console.log(this.name + " attacked " + others.name);
+    console.log(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)

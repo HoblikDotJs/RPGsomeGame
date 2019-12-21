@@ -1,6 +1,7 @@
-let monsterS, monsterM, arenaS, arenaM, weapons, shopM, shopS, player, enemies, myName, shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
+let monsterS, monsterM, arenaS, arenaM, weapons, shopM, shopS, player, myName, shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
 let logged = false;
 let signedUp = false;
+let enemies = [];
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
@@ -8,7 +9,6 @@ function setup() {
 	$.getJSON("weapons.json", function (json) {
 		weapons = json;
 		loadEnemies();
-		enemies = [wolf, wiz, giant];
 	});
 }
 //----------------------------------------------------------------------------------------- 
@@ -159,7 +159,7 @@ function fightMonsters() {
 function makeSelect() {
 	select = $("<select>").appendTo("#selector");
 	select.addClass("sel");
-	//select.mouseover(refreshSelect);
+	//select.mouseover(refreshSelect); // bug where refreshing select
 	refreshSelect();
 }
 
