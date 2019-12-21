@@ -58,7 +58,6 @@ class Player {
     this.times = obj.times; // arena, monster, quest, shop;
     this.readMessages();
     this.calculateCharacter();
-
   }
 
   calculateCharacter() {
@@ -83,7 +82,8 @@ class Player {
     }
     this.saveState();
   }
-
+  //-------------------------------------------------------------------------------------
+  //                                  SHOP
   showShop() {
     firebase.database().ref("users/" + this.name + "/times/shop").on("value", (data) => {
       let oldDate = data.val();
@@ -103,18 +103,36 @@ class Player {
           this.shopItems.push(shoppingWeapons[randomIndex]);
           shoppingWeapons.splice(randomIndex, 1);
         }
-        firebase.database().ref("users/" + this.name + "/shopItems").set(this.shopItems);
+        this.updateShopItems();
         this.times.shop = Date.parse(new Date());
         firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
       } else {
         if (shopS && shopM) {
-          console.log("You need to wait " + shopM + ":" + shopS);
+          console.log("You need to wait " + shopM + ":" + shopS + " for new items");
         } else {
           console.log("You need to wait");
         }
+        console.log(this.shopItems);
       }
     });
   }
+  updateShopItems() {
+    firebase.database().ref("users/" + this.name + "/shopItems").set(this.shopItems);
+  }
+
+  buyFromShop(index) {
+    let item = this.shopItems[index];
+    if (player.gold >= item.price) {
+      player.gold -= item.price;
+      player.backpack.push(item);
+      this.shopItems.splice(index, 1);
+      this.updateShopItems();
+      player.saveState();
+    } else {
+      console.log("you cant");
+    }
+  }
+
   updateStats(stat) {
     for (let i = 0; i < Object.keys(this.upgradeCharacter).length; i++) {
       if (Object.keys(this.upgradeCharacter)[i] == stat) {
@@ -132,6 +150,7 @@ class Player {
     }
   }
 
+  //-------------------------------------------------------------------------------------
   saveState() {
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
@@ -164,7 +183,8 @@ class Player {
     }
     this.messages = [];
   }
-
+  //-------------------------------------------------------------------------------------
+  //                                FIGHTING
   fightInArena() {
     firebase.database().ref("users/" + this.name + "/times/arena").on("value", (data) => {
       let oldDate = data.val();
@@ -292,5 +312,5 @@ class Player {
       }
     }
   }
-
+  //-------------------------------------------------------------------------------------
 }
