@@ -1,7 +1,7 @@
 let baseCharacter = {
-  hp: 25,
+  hp: 150,
   damage: 20,
-  armor: 5,
+  armor: 10, // heal
   luck: 50,
   weight: 70,
   regen: 1,
@@ -27,6 +27,7 @@ class newPlayer {
       regen: 0,
       magicResistance: 0,
     }
+
     this.slots = {
       body: weapons.body["Nothing"],
       leftArm: weapons.leftArm["Nothing"],
@@ -34,6 +35,7 @@ class newPlayer {
       ring: weapons.ring["Nothing"],
       neck: weapons.neck["Nothing"],
     }
+
     this.times = {
       arena: 0,
       monsters: 0,
@@ -62,9 +64,9 @@ class Player {
 
   calculateCharacter() {
     this.character = {
-      hp: 25,
+      hp: 150,
       damage: 20,
-      armor: 5,
+      armor: 10, // heal
       luck: 50,
       weight: 70,
       regen: 1,

@@ -37,9 +37,9 @@ function signIn() {
 }
 
 function signUp() {
-	myName = prompt("What will be your name?");
+	myName = prompt("What will be your name?"); // lvl
 	password = prompt("What will be your password?"); //add some encryption later!!
-	newPlayer = new newPlayer(myName, password);
+	newPlayer = new newPlayer(myName, password); // null, undefined, magicResistance
 	firebase.database().ref("users/" + myName).set(newPlayer, () => {
 		document.getElementById("logButtons").removeChild(document.getElementById("up"));
 		signedUp = true;
