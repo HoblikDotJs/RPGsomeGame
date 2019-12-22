@@ -1,4 +1,5 @@
-let monsterS, monsterM, arenaS, arenaM, weapons, shopM, shopS, player, myName, shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
+let monsterS, monsterM, arenaS, arenaM, weapons, shopM, shopS, player, myName
+let shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
 let logged = false;
 let signedUp = false;
 let enemies = [];
@@ -28,9 +29,9 @@ function signIn() {
 			alert("Open your console with F12");
 			logged = true;
 			loadWorld();
-			console.log("You've been logged as " + myName);
+			printScreen("You've been logged as " + myName);
 		} else {
-			console.log("Wrong password");
+			printScreen("Wrong password");
 		}
 	});
 }
@@ -42,7 +43,7 @@ function signUp() {
 	firebase.database().ref("users/" + myName).set(newPlayer, () => {
 		document.getElementById("logButtons").removeChild(document.getElementById("up"));
 		signedUp = true;
-		console.log("signUp was ok");
+		printScreen("signUp was ok");
 	});
 }
 //-----------------------------------------------------------------------------------------
@@ -140,8 +141,18 @@ function showBestPlayers() {
 		bestPlayers.sort((a, b) => {
 			return b.fame - a.fame;
 		});
+		let bp = [];
+		if (bestPlayers[0].name) {
+			bp.push(bestPlayers[0].name)
+		}
+		if (bestPlayers[1].name) {
+			bp.push(bestPlayers[1].name)
+		}
+		if (bestPlayers[2].name) {
+			bp.push(bestPlayers[2].name)
+		}
+		printScreen(bp);
 	});
-	console.log(bestPlayers);
 }
 
 function showPlayer() {
@@ -181,3 +192,16 @@ function refreshSelect() {
 	}
 }
 //-----------------------------------------------------------------------------------------
+// 																		HELPING FUNCTIONS
+function printScreen(thing) {
+	if (typeof thing == "string") {
+		$("#screen").empty();
+		$("#screen").append("<p> " + thing + " </p>");
+	}
+	if (typeof thing == "object") {
+		$("#screen").empty();
+		for (let val in thing) {
+			$("#screen").append("<p> " + thing[val] + " </p>");
+		}
+	}
+}

@@ -108,9 +108,9 @@ class Player {
         firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
       } else {
         if (shopS && shopM) {
-          console.log("You need to wait " + shopM + ":" + shopS + " for new items");
+          printScreen("You need to wait " + shopM + ":" + shopS + " for new items");
         } else {
-          console.log("You need to wait");
+          printScreen("You need to wait");
         }
         console.log(this.shopItems);
       }
@@ -129,7 +129,7 @@ class Player {
       this.updateShopItems();
       player.saveState();
     } else {
-      console.log("you cant");
+      printScreen("you cant");
     }
   }
 
@@ -139,12 +139,12 @@ class Player {
         let price = this.upgradeCharacter[stat] * 5;
         let ans = prompt("Do you really want to update " + stat + " for " + price + " gold y/n");
         if (ans == "y" && this.gold >= price) {
-          console.log("Updating " + stat);
+          printScreen("Updating " + stat);
           this.upgradeCharacter[stat] += 2;
           this.gold -= price;
           this.saveState();
         } else {
-          console.log("Nothing");
+          printScreen("Not enough gold");
         }
       }
     }
@@ -169,10 +169,10 @@ class Player {
       this.backpack.splice(this.backpack.indexOf(object), 1);
       this.backpack.push(prevItem);
       this.calculateCharacter();
-      console.log("You just putted " + object.name + " on.");
+      printScreen("You just putted " + object.name + " on.");
       console.log(this.character);
     } else {
-      console.log("You must have the item in backpack.");
+      printScreen("You must have the item in backpack.");
       console.log(this.backpack);
     }
   }
@@ -195,7 +195,7 @@ class Player {
           let names = Object.keys(obj);
           let other = Math.floor(Math.random() * names.length);
           let index = names[other];
-          console.log("Found " + index);
+          printScreen("Found " + index);
           return obj[index];
         }
 
@@ -220,9 +220,9 @@ class Player {
         firebase.database().ref("users/" + this.name + "/times/arena").set(this.times.arena);
       } else {
         if (arenaM && arenaS) {
-          console.log("You must wait " + arenaM + ":" + arenaS);
+          printScreen("You must wait " + arenaM + ":" + arenaS);
         } else {
-          console.log("You must wait");
+          printScreen("You must wait");
         }
       }
     });
@@ -234,20 +234,19 @@ class Player {
       let thisDate = Date.parse(new Date());
       if (thisDate - oldDate > 600000) {
         if (this.lvl >= enemies.length) {
-          console.log("No enemies left");
+          printScreen("No enemies left");
         } else {
           if (this.attack(enemies[this.lvl])) {
             let drop = enemies[this.lvl].reward;
             let slot;
-            console.log(drop);
             for (let part in weapons) {
               if (weapons[part][drop]) {
                 slot = part;
               }
             }
             this.backpack.push(weapons[slot][drop]);
-            console.log("You won " + enemies[this.lvl].reward);
-            console.log("You won " + enemies[this.lvl].gold + " gold");
+            printScreen("You won " + enemies[this.lvl].reward);
+            printScreen("You won " + enemies[this.lvl].gold + " gold");
             this.gold += enemies[this.lvl].gold;
             this.lvl++;
             refreshSelect();
@@ -258,9 +257,9 @@ class Player {
         }
       } else {
         if (monsterS && monsterM) {
-          console.log("You need to wait " + monsterM + ":" + monsterS);
+          printScreen("You need to wait " + monsterM + ":" + monsterS);
         } else {
-          console.log("You need to wait");
+          printScreen("You need to wait");
         }
       }
     });
@@ -269,7 +268,7 @@ class Player {
   attack(others) {
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
-    console.log(this.name + " attacked " + others.name);
+    printScreen(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)
