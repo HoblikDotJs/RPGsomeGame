@@ -12,7 +12,9 @@ class newPlayer {
   constructor(name, password) {
     this.name = name;
     this.password = password;
-    this.lvl = 0;
+    this.bossLvl = 0;
+    this.lvl = 1;
+    this.xp = 0;
     this.gold = 0;
     this.fame = 0;
     this.messages = [];
@@ -49,8 +51,10 @@ class Player {
     this.upgradeCharacter = obj.upgradeCharacter;
     this.character = baseCharacter;
     this.gold = obj.gold;
+    this.bossLvl = obj.bossLvl;
     this.lvl = obj.lvl;
     this.name = obj.name;
+    this.xp = obj.xp;
     this.fame = obj.fame;
     this.password = obj.password;
     this.slots = obj.slots;
@@ -153,16 +157,22 @@ class Player {
   }
 
   //-------------------------------------------------------------------------------------
+
   saveState() {
+    this.lvlUp();
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
     firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
     firebase.database().ref("users/" + this.name + "/lvl").set(this.lvl);
+    firebase.database().ref("users/" + this.name + "/xp").set(this.xp);
+    firebase.database().ref("users/" + this.name + "/bossLvl").set(this.bossLvl);
     firebase.database().ref("users/" + this.name + "/fame").set(this.fame);
     firebase.database().ref("users/" + this.name + "/slots").set(this.slots);
     firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
   }
+
+
 
   putOn(object) {
     if (this.backpack.indexOf(object) != -1) {
@@ -207,6 +217,8 @@ class Player {
           if (this.attack(enemy)) {
             this.gold += 10;
             this.fame += 1;
+            this.xp += enemy.lvl * 5;
+            console.log(this.xp);
           } else {
             firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
               return gold += 10;
@@ -235,11 +247,11 @@ class Player {
       let oldDate = data.val();
       let thisDate = Date.parse(new Date());
       if (thisDate - oldDate > 600000) {
-        if (this.lvl >= enemies.length) {
+        if (this.bossLvl >= enemies.length) {
           printScreen("No enemies left");
         } else {
-          if (this.attack(enemies[this.lvl])) {
-            let drop = enemies[this.lvl].reward;
+          if (this.attack(enemies[this.bossLvl])) {
+            let drop = enemies[this.bossLvl].reward;
             let slot;
             for (let part in weapons) {
               if (weapons[part][drop]) {
@@ -247,10 +259,11 @@ class Player {
               }
             }
             this.backpack.push(weapons[slot][drop]);
-            printScreen("You won " + enemies[this.lvl].reward);
-            printScreen("You won " + enemies[this.lvl].gold + " gold");
-            this.gold += enemies[this.lvl].gold;
-            this.lvl++;
+            printScreen("You won " + enemies[this.bossLvl].reward);
+            printScreen("You won " + enemies[this.bossLvl].gold + " gold");
+            this.gold += enemies[this.bossLvl].gold;
+            this.xp += this.bossLvl * 10;
+            this.bossLvl++;
             refreshSelect();
             this.saveState();
           }
@@ -278,16 +291,16 @@ class Player {
         console.log(this.name + " regenerated " + this.character.regen + " hp");
         this.character.hp += this.character.regen;
         let critMul = Math.random() * 10;
-        othersHp -= (this.character.damage - others.character.armor) * critMul;
-        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor) * critMul) + " damage.")
+        othersHp -= (this.character.damage - others.character.armor / 2) * critMul;
+        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor / 2) * critMul) + " damage.")
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return true
         }
       } else if ((Math.random() * 100) < this.character.luck) { // luck means how many % will he hit
-        othersHp -= this.character.damage - others.character.armor;
-        console.log(this.name + " did " + (this.character.damage - others.character.armor) + " damage.");
+        othersHp -= this.character.damage - others.character.armor / 2;
+        console.log(this.name + " did " + (this.character.damage - others.character.armor / 2) + " damage.");
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
@@ -301,16 +314,16 @@ class Player {
         others.character.hp += others.character.regen;
         console.log(others.name + " regenerated " + others.character.regen + " hp");
         let critMul = Math.random() * 10;
-        yourHp -= (others.character.damage - this.character.armor) * critMul;
-        console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor) * critMul) + " damage.")
+        yourHp -= (others.character.damage - this.character.armor / 2) * critMul;
+        console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor / 2) * critMul) + " damage.")
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return false
         }
       } else if ((Math.random() * 100) < others.character.luck) {
-        yourHp -= others.character.damage - this.character.armor;
-        console.log(others.name + " did " + (others.character.damage - this.character.armor) + " damage.");
+        yourHp -= others.character.damage - this.character.armor / 2;
+        console.log(others.name + " did " + (others.character.damage - this.character.armor / 2) + " damage.");
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
@@ -322,4 +335,13 @@ class Player {
     }
   }
   //-------------------------------------------------------------------------------------
+  //                                    HELP FUNCTIONS
+  lvlUp() {
+    if (this.xp > Math.pow(3, this.lvl)) {
+      this.xp -= Math.pow(3, this.lvl);
+      this.lvl++;
+      console.log("NEW LVL!" + this.lvl);
+      this.lvlUp();
+    }
+  }
 }

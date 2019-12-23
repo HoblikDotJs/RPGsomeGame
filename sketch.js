@@ -170,7 +170,6 @@ function fightMonsters() {
 function makeSelect() {
 	select = $("<select>").appendTo("#selector");
 	select.addClass("sel");
-	//select.mouseover(refreshSelect); // bug where refreshing select
 	refreshSelect();
 }
 
