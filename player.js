@@ -218,7 +218,6 @@ class Player {
             this.gold += 10;
             this.fame += 1;
             this.xp += enemy.lvl * 5;
-            console.log(this.xp);
           } else {
             firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
               return gold += 10;
@@ -340,7 +339,8 @@ class Player {
     if (this.xp > Math.pow(3, this.lvl)) {
       this.xp -= Math.pow(3, this.lvl);
       this.lvl++;
-      console.log("NEW LVL!" + this.lvl);
+      this.gold += Math.pow(2, this.lvl);
+      console.log("You reached " + this.lvl + " lvl!");
       this.lvlUp();
     }
   }
