@@ -306,20 +306,6 @@
     }
   },
   "head" : {
-    "Avocado" : {
-      "name" : "Avocado",
-      "price" : "5",
-      "properties" : {
-        "armor" : "-2",
-        "damage" : "0",
-        "hp" : "0",
-        "luck" : "-4",
-        "magicResistance" : "0",
-        "regen" : "13",
-        "weight" : "1"
-      },
-      "slot" : "head"
-    },
     "Helmet with Four Eyes" : {
       "name" : "Helmet with Four Eyes",
       "price" : "1000000",
@@ -331,20 +317,6 @@
         "magicResistance" : "25",
         "regen" : "0",
         "weight" : "5"
-      },
-      "slot" : "head"
-    },
-    "Noble Crown" : {
-      "name" : "Noble Crown",
-      "price" : "7000",
-      "properties" : {
-        "armor" : "12",
-        "damage" : "0",
-        "hp" : "5",
-        "luck" : "7",
-        "magicResistance" : "14",
-        "regen" : "0",
-        "weight" : "1"
       },
       "slot" : "head"
     },
@@ -438,53 +410,11 @@
     }
   },
   "neck" : {
-    "Elegant Necklace" : {
-      "name" : "Elegant Necklace",
-      "price" : "2500",
-      "properties" : {
-        "armor" : "-10",
-        "damage" : "10",
-        "hp" : "2",
-        "luck" : "0",
-        "magicResistance" : "0",
-        "regen" : "2",
-        "weight" : "1"
-      },
-      "slot" : "neck"
-    },
     "Nothing" : {
       "name" : "Nothing",
       "price" : "0",
       "properties" : {
         "luck" : "1"
-      },
-      "slot" : "neck"
-    },
-    "Sharp Teeth" : {
-      "name" : "Sharp Teeth",
-      "price" : "5000",
-      "properties" : {
-        "armor" : "0",
-        "damage" : "15",
-        "hp" : "-17",
-        "luck" : "5",
-        "magicResistance" : "0",
-        "regen" : "0",
-        "weight" : "3"
-      },
-      "slot" : "neck"
-    },
-    "Spider Necklace" : {
-      "name" : "Spider Necklace",
-      "price" : "1000",
-      "properties" : {
-        "armor" : "2",
-        "damage" : "5",
-        "hp" : "7",
-        "luck" : "10",
-        "magicResistance" : "0",
-        "regen" : "0",
-        "weight" : "2"
       },
       "slot" : "neck"
     }
