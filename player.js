@@ -12,9 +12,10 @@ class newPlayer {
   constructor(name, password) {
     this.name = name;
     this.password = password;
-    this.lvl = 0;
+    this.boss = 0;
     this.gold = 0;
     this.fame = 0;
+    this.lvl = 1;
     this.messages = [];
     this.character = baseCharacter;
     this.shopItems = [];
@@ -49,9 +50,10 @@ class Player {
     this.upgradeCharacter = obj.upgradeCharacter;
     this.character = baseCharacter;
     this.gold = obj.gold;
-    this.lvl = obj.lvl;
+    this.boss = obj.boss;
     this.name = obj.name;
     this.fame = obj.fame;
+    this.lvl = obj.lvl;
     this.password = obj.password;
     this.slots = obj.slots;
     this.backpack = obj.backpack || [];
@@ -158,7 +160,8 @@ class Player {
     firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
     firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
-    firebase.database().ref("users/" + this.name + "/lvl").set(this.lvl);
+    firebase.database().ref("users/" + this.name + "/boss").set(this.boss);
+    //firebase.database().ref("users/" + this.name + "/lvl").set(this.lvl);
     firebase.database().ref("users/" + this.name + "/fame").set(this.fame);
     firebase.database().ref("users/" + this.name + "/slots").set(this.slots);
     firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
@@ -207,6 +210,7 @@ class Player {
           if (this.attack(enemy)) {
             this.gold += 10;
             this.fame += 1;
+            this.lvl += 1;
           } else {
             firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
               return gold += 10;
@@ -235,11 +239,11 @@ class Player {
       let oldDate = data.val();
       let thisDate = Date.parse(new Date());
       if (thisDate - oldDate > 600000) {
-        if (this.lvl >= enemies.length) {
+        if (this.boss >= enemies.length) {
           printScreen("No enemies left");
         } else {
-          if (this.attack(enemies[this.lvl])) {
-            let drop = enemies[this.lvl].reward;
+          if (this.attack(enemies[this.boss])) {
+            let drop = enemies[this.boss].reward;
             let slot;
             for (let part in weapons) {
               if (weapons[part][drop]) {
@@ -247,10 +251,11 @@ class Player {
               }
             }
             this.backpack.push(weapons[slot][drop]);
-            printScreen("You won " + enemies[this.lvl].reward);
-            printScreen("You won " + enemies[this.lvl].gold + " gold");
-            this.gold += enemies[this.lvl].gold;
-            this.lvl++;
+            printScreen("You won " + enemies[this.boss].reward);
+            printScreen("You won " + enemies[this.boss].gold + " gold");
+            this.gold += enemies[this.boss].gold;
+            // this.lvl += this.boss;
+            this.boss++;
             refreshSelect();
             this.saveState();
           }
@@ -271,52 +276,58 @@ class Player {
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
     printScreen(this.name + " attacked " + others.name);
+    console.log(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
     while (othersHp > 0 && yourHp > 0) {
-      //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
+        //CRIT
         console.log(this.name + " regenerated " + this.character.regen + " hp");
         this.character.hp += this.character.regen;
         let critMul = Math.random() * 10;
-        othersHp -= (this.character.damage - others.character.armor) * critMul;
-        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor) * critMul) + " damage.")
+        othersHp -= (this.character.damage - others.character.armor / 2) * critMul;
+        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor / 2) * critMul) + " damage.")
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return true
         }
-      } else if ((Math.random() * 100) < this.character.luck) { // luck means how many % will he hit
-        othersHp -= this.character.damage - others.character.armor;
-        console.log(this.name + " did " + (this.character.damage - others.character.armor) + " damage.");
+        //HIT
+      } else if ((Math.random() * 100) < this.character.luck) {
+        othersHp -= this.character.damage - others.character.armor / 2;
+        console.log(this.name + " did " + (this.character.damage - others.character.armor / 2) + " damage.");
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return true
         }
       } else {
+        //MISS
         console.log(this.name + " missed");
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if ((Math.random() * 100) < others.character.luck / (Math.random() * 20)) {
+        //CRIT
         others.character.hp += others.character.regen;
         console.log(others.name + " regenerated " + others.character.regen + " hp");
         let critMul = Math.random() * 10;
-        yourHp -= (others.character.damage - this.character.armor) * critMul;
-        console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor) * critMul) + " damage.")
+        yourHp -= (others.character.damage - this.character.armor / 2) * critMul;
+        console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor / 2) * critMul) + " damage.")
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return false
         }
       } else if ((Math.random() * 100) < others.character.luck) {
-        yourHp -= others.character.damage - this.character.armor;
-        console.log(others.name + " did " + (others.character.damage - this.character.armor) + " damage.");
+        //HIT
+        yourHp -= others.character.damage - this.character.armor / 2;
+        console.log(others.name + " did " + (others.character.damage - this.character.armor / 2) + " damage.");
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
           return false
         }
       } else {
+        //MISS
         console.log(others.name + " missed");
       }
     }

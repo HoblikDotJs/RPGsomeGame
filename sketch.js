@@ -3,6 +3,14 @@ let shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBt
 let logged = false;
 let signedUp = false;
 let enemies = [];
+/* TODO:
+add some encryption later!!
+lvl for boss and player lvl
+
+
+
+
+*/
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
@@ -37,14 +45,18 @@ function signIn() {
 }
 
 function signUp() {
-	myName = prompt("What will be your name?"); // lvl
-	password = prompt("What will be your password?"); //add some encryption later!!
-	newPlayer = new newPlayer(myName, password); // null, undefined, magicResistance
-	firebase.database().ref("users/" + myName).set(newPlayer, () => {
-		document.getElementById("logButtons").removeChild(document.getElementById("up"));
-		signedUp = true;
-		printScreen("signUp was ok");
-	});
+	myName = prompt("What will be your name?");
+	password = prompt("What will be your password?");
+	if (myName && password) {
+		newPlayer = new newPlayer(myName, password);
+		firebase.database().ref("users/" + myName).set(newPlayer, () => {
+			document.getElementById("logButtons").removeChild(document.getElementById("up"));
+			signedUp = true;
+			printScreen("signUp was ok");
+		});
+	} else {
+		printScreen("Must have name and password");
+	}
 }
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
@@ -170,7 +182,6 @@ function fightMonsters() {
 function makeSelect() {
 	select = $("<select>").appendTo("#selector");
 	select.addClass("sel");
-	//select.mouseover(refreshSelect); // bug where refreshing select
 	refreshSelect();
 }
 
