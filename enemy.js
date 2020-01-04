@@ -2,7 +2,9 @@ class Enemy {
   constructor(name, character, reward) {
     this.name = name;
     this.character = character;
-    this.reward = reward;
+    if (reward) {
+      this.reward = reward;
+    }
   }
 }
 
@@ -11,4 +13,10 @@ function loadEnemies() {
     enemies.push(weapons["Monsters"][enemy]);
   }
   enemies.sort((a, b) => a.lvl - b.lvl);
+}
+
+function loadNpcs() {
+  for (let npc in weapons["Npcs"]) {
+    npcArr.push(weapons["Npcs"][npc]);
+  }
 }

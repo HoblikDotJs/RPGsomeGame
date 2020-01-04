@@ -12,11 +12,11 @@ class newPlayer {
   constructor(name, password) {
     this.name = name;
     this.password = password;
-    this.bossLvl = 0;
-    this.lvl = 1;
-    this.xp = 0;
-    this.gold = 0;
-    this.fame = 0;
+    this.bossLvl = parseInt(0);
+    this.lvl = parseInt(1);
+    this.xp = parseInt(0);
+    this.gold = parseInt(0);
+    this.fame = parseInt(0);
     this.messages = [];
     this.character = baseCharacter;
     this.shopItems = [];
@@ -99,7 +99,7 @@ class Player {
         let shoppingWeapons = [];
         for (let part in weapons) {
           for (let item in weapons[part]) {
-            if (weapons[part][item].name != "Nothing" && part != "Monsters") {
+            if (weapons[part][item].name != "Nothing" && part != "Monsters" && part != "Quests" && part != "Npcs") {
               shoppingWeapons.push(weapons[part][item]);
             }
           }
@@ -113,12 +113,13 @@ class Player {
         this.times.shop = Date.parse(new Date());
         firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
       } else {
-        if (shopS && shopM) {
-          printScreen("You need to wait " + shopM + ":" + shopS + " for new items");
+        if (times.shopS && times.shopM) {
+          printScreen("You need to wait " + times.shopM + ":" + times.shopS + " for new items");
         } else {
           printScreen("You need to wait");
         }
         console.log(this.shopItems);
+        refreshSelect();
       }
     });
   }
@@ -128,12 +129,12 @@ class Player {
 
   buyFromShop(index) {
     let item = this.shopItems[index];
-    if (player.gold >= item.price) {
-      player.gold -= item.price;
-      player.backpack.push(item);
+    if (parseInt(this.gold) >= parseInt(item.price)) {
+      this.gold -= parseInt(item.price);
+      this.backpack.push(item);
       this.shopItems.splice(index, 1);
       this.updateShopItems();
-      player.saveState();
+      this.saveState();
     } else {
       printScreen("you cant");
     }
@@ -144,10 +145,10 @@ class Player {
       if (Object.keys(this.upgradeCharacter)[i] == stat) {
         let price = this.upgradeCharacter[stat] * 5;
         let ans = prompt("Do you really want to update " + stat + " for " + price + " gold y/n");
-        if (ans == "y" && this.gold >= price) {
+        if (ans == "y" && parseInt(this.gold) >= price) {
           printScreen("Updating " + stat);
           this.upgradeCharacter[stat] += 2;
-          this.gold -= price;
+          this.gold -= parseInt(price);
           this.saveState();
         } else {
           printScreen("Not enough gold");
@@ -157,11 +158,46 @@ class Player {
   }
 
   //-------------------------------------------------------------------------------------
+  //                                        QUESTS
+  showQuests() {
+    firebase.database().ref("users/" + this.name + "/times/quest").on("value", (data) => {
+      let oldDate = data.val();
+      let newDate = Date.parse(new Date());
+      if (newDate - oldDate > 600000) {
+        let NPC = this.makeNpc();
+        if (this.attack(NPC)) {
+          this.xp += this.lvl * 5;
+          this.gold += this.lvl * 10;
+        } else {
+          this.xp += this.lvl;
+        }
+        this.saveState();
+      } else {
+        printScreen("You cant now!!");
+      }
+      firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
+    });
+  }
+  makeNpc() {
+    let npcCharacter = this.character;
+    for (let stat in npcCharacter) {
+      npcCharacter[stat] *= Math.random() + 0.3;
+      npcCharacter[stat] = Math.floor(npcCharacter[stat]);
+    }
+    this.calculateCharacter();
+    console.log(npcCharacter);
+    console.log(this.character);
+    let npcName = npcArr[Math.floor(Math.random() * npcArr.length)]
+    return new Enemy(npcName, npcCharacter);
+  }
+
+  //-------------------------------------------------------------------------------------
+
 
   saveState() {
     this.lvlUp();
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
-    firebase.database().ref("users/" + this.name + "/gold").set(this.gold);
+    firebase.database().ref("users/" + this.name + "/gold").set(parseInt(this.gold));
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
     firebase.database().ref("users/" + this.name + "/messages").set(this.messages);
     firebase.database().ref("users/" + this.name + "/lvl").set(this.lvl);
@@ -231,12 +267,6 @@ class Player {
         this.times.arena = Date.parse(new Date());
         this.saveState();
         firebase.database().ref("users/" + this.name + "/times/arena").set(this.times.arena);
-      } else {
-        if (arenaM && arenaS) {
-          printScreen("You must wait " + arenaM + ":" + arenaS);
-        } else {
-          printScreen("You must wait");
-        }
       }
     });
   }
@@ -259,8 +289,8 @@ class Player {
             }
             this.backpack.push(weapons[slot][drop]);
             printScreen("You won " + enemies[this.bossLvl].reward);
-            printScreen("You won " + enemies[this.bossLvl].gold + " gold");
-            this.gold += enemies[this.bossLvl].gold;
+            printScreen("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
+            this.gold += parseInt(enemies[this.bossLvl].gold);
             this.xp += this.bossLvl * 10;
             this.bossLvl++;
             refreshSelect();
@@ -270,8 +300,8 @@ class Player {
           firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
       } else {
-        if (monsterS && monsterM) {
-          printScreen("You need to wait " + monsterM + ":" + monsterS);
+        if (times.monsterS && times.monsterM) {
+          printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
         } else {
           printScreen("You need to wait");
         }
@@ -338,8 +368,9 @@ class Player {
   lvlUp() {
     if (this.xp > Math.pow(3, this.lvl)) {
       this.xp -= Math.pow(3, this.lvl);
-      this.lvl++;
       this.gold += Math.pow(2, this.lvl);
+      this.lvl++;
+      console.log("You received " + Math.pow(2, this.lvl) + " gold!");
       console.log("You reached " + this.lvl + " lvl!");
       this.lvlUp();
     }

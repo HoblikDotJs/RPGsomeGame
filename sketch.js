@@ -1,8 +1,29 @@
-let monsterS, monsterM, arenaS, arenaM, weapons, shopM, shopS, player, myName
-let shopBtn, password, select, putOnBtn, arenaBtn, playerBtn, monsterBtn, fameBtn;
+let player, myName;
+let password, select, shopSelect;
+let times = {
+	monsterS: undefined,
+	monsterM: undefined,
+	arenaS: undefined,
+	arenaM: undefined,
+	shopS: undefined,
+	shopM: undefined,
+	questM: undefined,
+	questS: undefined,
+}
+let screenButtons = {
+	shopBtn: undefined,
+	putOnBtn: undefined,
+	arenaBtn: undefined,
+	playerBtn: undefined,
+	monsterBtn: undefined,
+	fameBtn: undefined,
+	questBtn: undefined,
+	buyBtn: undefined,
+}
 let logged = false;
 let signedUp = false;
 let enemies = [];
+let npcArr = [];
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
@@ -10,6 +31,7 @@ function setup() {
 	$.getJSON("weapons.json", function (json) {
 		weapons = json;
 		loadEnemies();
+		loadNpcs();
 	});
 }
 //----------------------------------------------------------------------------------------- 
@@ -49,48 +71,58 @@ function signUp() {
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
 	let parent = $("#buttons");
-	arenaBtn = $("<button class= 'bl' id='arenaId'>Arena</button>").click(arenaFight);
-	monsterBtn = $("<button class= 'bl' id='monsterId'>Monsters</button>").click(fightMonsters);
-	playerBtn = $("<button class= 'bl' id='arenaId'>Player</button>").click(showPlayer);
-	fameBtn = $("<button class= 'bl' id='arenaId'>Hall Of Fame</button>").click(showBestPlayers);
-	shopBtn = $("<button class= 'bl' id='arenaId'>Shop</button>").click(showShop);
-	arenaBtn.hover(showArenaTime, showArenaTitle);
-	monsterBtn.hover(showMonsterTime, showMonsterTitle);
-	shopBtn.hover(showShopTime, showShopTitle);
-	parent.append(arenaBtn);
-	parent.append(monsterBtn);
-	parent.append(playerBtn);
-	parent.append(fameBtn);
-	parent.append(shopBtn);
+	screenButtons.arenaBtn = $("<button class= 'bl' id='arenaId'>Arena</button>").click(arenaFight);
+	screenButtons.monsterBtn = $("<button class= 'bl' id='monsterId'>Monsters</button>").click(fightMonsters);
+	screenButtons.playerBtn = $("<button class= 'bl' id='arenaId'>Player</button>").click(showPlayer);
+	screenButtons.fameBtn = $("<button class= 'bl' id='arenaId'>Hall Of Fame</button>").click(showBestPlayers);
+	screenButtons.questBtn = $("<button class= 'bl' id='arenaId'>Quests</button>").click(showQuests);
+	screenButtons.arenaBtn.hover(showArenaTime, showArenaTitle);
+	screenButtons.monsterBtn.hover(showMonsterTime, showMonsterTitle);
+	screenButtons.questBtn.hover(showQuestTime, showQuestTitle);
+	parent.append(screenButtons.arenaBtn);
+	parent.append(screenButtons.monsterBtn);
+	parent.append(screenButtons.playerBtn);
+	parent.append(screenButtons.fameBtn);
+	parent.append(screenButtons.questBtn);
 	makeSelect();
 	putOnButton();
+	makeShopSelect();
+	buyButton();
+	reloadShopBtn();
 }
 //-----------------------------------------------------------------------------------------
+//                                     SHOW FUNCTIONS
+
+function showArenaTitle() {
+	screenButtons.arenaBtn.html("Arena");
+}
+
+function showMonsterTitle() {
+	screenButtons.monsterBtn.html("Monsters");
+}
+
+function showQuestTitle() {
+	screenButtons.questBtn.html("Quests");
+}
+
+function showShopTitle() {
+	screenButtons.shopBtn.html("🔄");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 function showMonsterTime() {
 	firebase.database().ref("users/" + player.name + "/times/monsters").once("value", (data) => {
 		let oldTime = data.val();
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
-			monsterBtn.html("Ready!");
+			screenButtons.monsterBtn.html("Ready!");
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000;
-			monsterM = Math.floor(time / 60);
-			monsterS = Math.floor(time - monsterM * 60);
-			monsterBtn.html(monsterM + " : " + monsterS);
+			times.monsterM = Math.floor(time / 60);
+			times.monsterS = Math.floor(time - times.monsterM * 60);
+			screenButtons.monsterBtn.html(times.monsterM + " : " + times.monsterS);
 		}
 	})
-}
-
-function showShop() {
-	player.showShop();
-}
-
-function showMonsterTitle() {
-	monsterBtn.html("Monsters");
-}
-
-function showShopTitle() {
-	shopBtn.html("Shop");
 }
 
 function showShopTime() {
@@ -98,36 +130,50 @@ function showShopTime() {
 		let oldTime = data.val();
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
-			shopBtn.html("Ready!");
+			screenButtons.shopBtn.html("Ready!");
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000
-			shopM = Math.floor(time / 60);
-			shopS = Math.floor(time - shopM * 60);
-			shopBtn.html(shopM + " : " + shopS);
+			times.shopM = Math.floor(time / 60);
+			times.shopS = Math.floor(time - times.shopM * 60);
+			screenButtons.shopBtn.html(times.shopM + " : " + times.shopS);
 		}
 	});
 }
 
+function showQuestTime() {
+	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (data) => {
+		let oldTime = data.val();
+		let newTime = Date.parse(new Date());
+		if (newTime - oldTime > 600000) {
+			screenButtons.questBtn.html("Ready!");
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000
+			times.questM = Math.floor(time / 60);
+			times.questS = Math.floor(time - times.questM * 60);
+			screenButtons.questBtn.html(times.questM + " : " + times.questS);
+		}
+	});
+}
 
 function showArenaTime() {
 	firebase.database().ref("users/" + player.name + "/times/arena").once("value", (data) => {
 		let oldTime = data.val();
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
-			arenaBtn.html("Ready!");
+			screenButtons.arenaBtn.html("Ready!");
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000
-			arenaM = Math.floor(time / 60);
-			arenaS = Math.floor(time - arenaM * 60);
-			arenaBtn.html(arenaM + " : " + arenaS);
+			times.arenaM = Math.floor(time / 60);
+			times.arenaS = Math.floor(time - times.arenaM * 60);
+			screenButtons.arenaBtn.html(times.arenaM + " : " + times.arenaS);
 		}
 	});
 }
 
-function showArenaTitle() {
-	arenaBtn.html("Arena");
-}
 
+
+//---------------------------------------------------------------------------------------
+//                                       BUTTON CLICKS
 function showBestPlayers() {
 	let bestPlayers = [];
 	firebase.database().ref("users").on("value", function (snapshot) {
@@ -155,18 +201,45 @@ function showBestPlayers() {
 	});
 }
 
-function showPlayer() {
-	console.log(player);
+function showQuests() {
+	player.showQuests();
 }
 
+function showShop() {
+	player.showShop();
+	refreshShopSelect();
+}
+
+function showPlayer() {
+	console.log(player.character);
+}
+//--------------------------------------------------------------------------------------
+//  												 							FIGHTING FUNCTIONS
 function arenaFight() {
-	player.fightInArena();
+	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
+		player.fightInArena();
+	} else {
+		if (times.arenaM && times.arenaS) {
+			printScreen("You must wait " + times.arenaM + ":" + times.arenaS);
+		} else {
+			printScreen("You must wait");
+		}
+	}
 }
 
 function fightMonsters() {
-	player.fightNext();
+	if ((times.monsterM == undefined && times.monsterS == undefined) || (times.monsterM == 0 && times.monsterS == 0)) {
+		player.fightNext();
+	} else {
+		if (times.monsterM && times.monsterS) {
+			printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
+		} else {
+			printScreen("You need to wait");
+		}
+	}
 }
-
+//--------------------------------------------------------------------------------------------
+// 																					SELECT FUNCTIONS
 function makeSelect() {
 	select = $("<select>").appendTo("#selector");
 	select.addClass("sel");
@@ -174,10 +247,10 @@ function makeSelect() {
 }
 
 function putOnButton() {
-	putOnBtn = $("<button>").appendTo("#selector");
-	putOnBtn.addClass("sel");
-	putOnBtn.html("Put on");
-	putOnBtn.click(() => {
+	screenButtons.putOnBtn = $("<button>").appendTo("#selector");
+	screenButtons.putOnBtn.addClass("sel");
+	screenButtons.putOnBtn.html("Put on");
+	screenButtons.putOnBtn.click(() => {
 		let index = select.val();
 		player.putOn(player.backpack[index]);
 		refreshSelect();
@@ -188,6 +261,43 @@ function refreshSelect() {
 	select.empty();
 	for (let i = 0; i < player.backpack.length; i++) {
 		select.append($("<option>").html(player.backpack[i].name).val(i));
+	}
+}
+//////////////////////////////////////////////////////////////
+function makeShopSelect() {
+	shopSelect = $("<select>").appendTo("#shopSel");
+	shopSelect.addClass("sel");
+	refreshShopSelect();
+}
+
+function buyButton() {
+	screenButtons.buyBtn = $("<button>").appendTo("#shopSel");
+	screenButtons.buyBtn.addClass("sel");
+	screenButtons.buyBtn.html("Buy");
+	screenButtons.buyBtn.click(() => {
+		let index = shopSelect.val();
+		player.buyFromShop(index);
+		refreshSelect();
+	})
+}
+
+function reloadShopBtn() {
+	screenButtons.shopBtn = $("<button>").appendTo("#shopSel");
+	screenButtons.shopBtn.addClass("sel");
+	screenButtons.shopBtn.html("🔄");
+	screenButtons.shopBtn.hover(showShopTime, showShopTitle);
+	screenButtons.shopBtn.click(() => {
+		showShop();
+
+	});
+}
+
+function refreshShopSelect() {
+	shopSelect.empty();
+	if (player.shopItems) {
+		for (let i = 0; i < player.shopItems.length; i++) {
+			shopSelect.append($("<option>").html(player.shopItems[i].name).val(i));
+		}
 	}
 }
 //-----------------------------------------------------------------------------------------

@@ -211,6 +211,15 @@
       "reward" : "Black Thread"
     }
   },
+  "Npcs" : {
+    "ZMRD" : "ZMRD"
+  },
+  "Quests" : {
+    "jdi a chcipni" : {
+      "description" : "chciiipni",
+      "name" : "jdi a chcipni"
+    }
+  },
   "body" : {
     "Angelic Armor" : {
       "name" : "Angelic Armor",
@@ -433,6 +442,20 @@
         "magicResistance" : "10",
         "regen" : "2",
         "weight" : "5"
+      },
+      "slot" : "leftArm"
+    },
+    "Uncut Fork" : {
+      "name" : "Uncut Fork",
+      "price" : "5",
+      "properties" : {
+        "armor" : "0",
+        "damage" : "15",
+        "hp" : "0",
+        "luck" : "10",
+        "magicResistance" : "0",
+        "regen" : "5",
+        "weight" : "1"
       },
       "slot" : "leftArm"
     }
