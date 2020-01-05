@@ -136,7 +136,8 @@ class Player {
       this.updateShopItems();
       this.saveState();
     } else {
-      printScreen("you cant");
+      let needGold = parseInt(item.price) - parseInt(this.gold);
+      printScreen("You will need " + needGold + " more gold");
     }
   }
 
@@ -178,6 +179,7 @@ class Player {
       firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
     });
   }
+
   makeNpc() {
     let npcCharacter = this.character;
     for (let stat in npcCharacter) {
@@ -185,15 +187,11 @@ class Player {
       npcCharacter[stat] = Math.floor(npcCharacter[stat]);
     }
     this.calculateCharacter();
-    console.log(npcCharacter);
-    console.log(this.character);
     let npcName = npcArr[Math.floor(Math.random() * npcArr.length)]
     return new Enemy(npcName, npcCharacter);
   }
 
   //-------------------------------------------------------------------------------------
-
-
   saveState() {
     this.lvlUp();
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
@@ -208,8 +206,6 @@ class Player {
     firebase.database().ref("users/" + this.name + "/backpack").set(this.backpack);
   }
 
-
-
   putOn(object) {
     if (this.backpack.indexOf(object) != -1) {
       let prevItem = this.slots[object.slot];
@@ -219,6 +215,7 @@ class Player {
       this.calculateCharacter();
       printScreen("You just putted " + object.name + " on.");
       console.log(this.character);
+      console.log(this.slots);
     } else {
       printScreen("You must have the item in backpack.");
       console.log(this.backpack);
@@ -290,6 +287,8 @@ class Player {
             this.backpack.push(weapons[slot][drop]);
             printScreen("You won " + enemies[this.bossLvl].reward);
             printScreen("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
+            console.log("You won " + enemies[this.bossLvl].reward);
+            console.log("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
             this.gold += parseInt(enemies[this.bossLvl].gold);
             this.xp += this.bossLvl * 10;
             this.bossLvl++;
@@ -312,6 +311,7 @@ class Player {
   attack(others) {
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
+    console.log(this.name + " attacked " + others.name);
     printScreen(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
     while (othersHp > 0 && yourHp > 0) {

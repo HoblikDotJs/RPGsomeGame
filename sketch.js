@@ -187,17 +187,21 @@ function showBestPlayers() {
 		bestPlayers.sort((a, b) => {
 			return b.fame - a.fame;
 		});
-		let bp = [];
+		let bp = []; //bestPlayers
+		let bpf = []; //bestPlayers fame
 		if (bestPlayers[0].name) {
-			bp.push(bestPlayers[0].name)
+			bp.push(bestPlayers[0].name);
+			bpf.push(bestPlayers[0].fame);
 		}
 		if (bestPlayers[1].name) {
-			bp.push(bestPlayers[1].name)
+			bp.push(bestPlayers[1].name);
+			bpf.push(bestPlayers[1].fame);
 		}
 		if (bestPlayers[2].name) {
-			bp.push(bestPlayers[2].name)
+			bp.push(bestPlayers[2].name);
+			bpf.push(bestPlayers[2].fame);
 		}
-		printScreen(bp);
+		printScreen(bp, bpf);
 	});
 }
 
@@ -212,6 +216,11 @@ function showShop() {
 
 function showPlayer() {
 	console.log(player.character);
+	console.log("You have " + player.gold + " gold");
+	console.log("You are lvl " + player.lvl);
+	console.log("You have " + player.xp + " xp");
+	console.log("You have " + player.fame + " fame");
+	console.log(player.slots);
 }
 //--------------------------------------------------------------------------------------
 //  												 							FIGHTING FUNCTIONS
@@ -260,7 +269,9 @@ function putOnButton() {
 function refreshSelect() {
 	select.empty();
 	for (let i = 0; i < player.backpack.length; i++) {
-		select.append($("<option>").html(player.backpack[i].name).val(i));
+		let itemName = player.backpack[i].name;
+		let part = player.backpack[i].slot;
+		select.append($("<option>").html(itemName + " (" + part + ")").val(i));
 	}
 }
 //////////////////////////////////////////////////////////////
@@ -296,13 +307,15 @@ function refreshShopSelect() {
 	shopSelect.empty();
 	if (player.shopItems) {
 		for (let i = 0; i < player.shopItems.length; i++) {
-			shopSelect.append($("<option>").html(player.shopItems[i].name).val(i));
+			let itemName = player.shopItems[i].name;
+			let part = player.shopItems[i].slot;
+			shopSelect.append($("<option>").html(itemName + " (" + part + ")").val(i));
 		}
 	}
 }
 //-----------------------------------------------------------------------------------------
 // 																		HELPING FUNCTIONS
-function printScreen(thing) {
+function printScreen(thing, fame) {
 	if (typeof thing == "string") {
 		$("#screen").empty();
 		$("#screen").append("<p> " + thing + " </p>");
@@ -310,7 +323,8 @@ function printScreen(thing) {
 	if (typeof thing == "object") {
 		$("#screen").empty();
 		for (let val in thing) {
-			$("#screen").append("<p> " + thing[val] + " </p>");
+			let place = parseInt(val) + 1;
+			$("#screen").append("<p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p>");
 		}
 	}
 }
