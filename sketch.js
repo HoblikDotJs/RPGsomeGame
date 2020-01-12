@@ -36,37 +36,34 @@ function setup() {
 }
 //----------------------------------------------------------------------------------------- 
 //                                SIGN IN/UP
-function signIn() {
-	let myName = prompt("What is your name?");
-	let password = prompt("What is your password?");
-	firebase.database().ref("users/" + myName).once("value").then((dataS) => {
-		if (dataS.val().password == password) {
-			player = new Player(dataS.val());
-			if (signedUp) {
-				document.getElementById("logButtons").removeChild(document.getElementById("in"));
-			} else {
-				document.getElementById("logButtons").removeChild(document.getElementById("in"));
-				document.getElementById("logButtons").removeChild(document.getElementById("up"));
-			}
-			alert("Open your console with F12");
-			logged = true;
-			loadWorld();
-			printScreen("You've been logged as " + myName);
-		} else {
-			printScreen("Wrong password");
-		}
-	});
-}
 
-function signUp() {
-	myName = prompt("What will be your name?"); // lvl
-	password = prompt("What will be your password?"); //add some encryption later!!
-	newPlayer = new newPlayer(myName, password); // null, undefined, magicResistance
-	firebase.database().ref("users/" + myName).set(newPlayer, () => {
-		document.getElementById("logButtons").removeChild(document.getElementById("up"));
-		signedUp = true;
-		printScreen("signUp was ok");
-	});
+function onSignIn(googleUser) {
+	var profile = googleUser.getBasicProfile();
+	if (profile.getId()) {
+		myName = profile.getName();
+		password = profile.getId();
+		firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+			if (dataS.val() == undefined || dataS.val() == null) {
+				let pl = new newPlayer(myName, password);
+				firebase.database().ref("users/" + myName).set(pl, () => {
+					signedUp = true;
+					printScreen("signUp was ok");
+					location.reload();
+				});
+			} else {
+				firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+					if (dataS.val().password == password) {
+						player = new Player(dataS.val());
+						//if signed up
+						alert("Open your console with F12");
+						logged = true;
+						loadWorld();
+						printScreen("You've been logged as " + myName);
+					}
+				});
+			}
+		});
+	}
 }
 //-----------------------------------------------------------------------------------------
 function loadWorld() {

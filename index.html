@@ -5,6 +5,11 @@
   <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id"
+    content="442990658970-ovpt3nncr2rg4ji6oudcir0a3bq3m8cm.apps.googleusercontent.com">
+
+
 
   <script>
     var firebaseConfig = {
@@ -30,8 +35,17 @@
 
 <body>
   <div id="logButtons">
-    <button id="in" class="bl" onclick="signIn()" type="button">Sign In</button>
-    <button id="up" class="bl" onclick="signUp()" type="button">Sign Up</button>
+    <div class="g-signin2" data-onsuccess="onSignIn"> </div>
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          location.reload();
+        });
+      }
+    </script>
+
   </div>
   <div id="buttons">
   </div>
