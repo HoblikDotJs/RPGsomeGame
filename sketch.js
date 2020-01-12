@@ -20,8 +20,6 @@ let screenButtons = {
 	questBtn: undefined,
 	buyBtn: undefined,
 }
-let logged = false;
-let signedUp = false;
 let enemies = [];
 let npcArr = [];
 
@@ -40,23 +38,28 @@ function setup() {
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	if (profile.getId()) {
-		myName = profile.getName();
+		myName = prompt("Account name?");
+		if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName == "" || myName == " ") {
+			printScreen("Name failed!");
+			return
+		}
 		password = profile.getId();
 		firebase.database().ref("users/" + myName).once("value").then((dataS) => {
 			if (dataS.val() == undefined || dataS.val() == null) {
 				let pl = new newPlayer(myName, password);
 				firebase.database().ref("users/" + myName).set(pl, () => {
-					signedUp = true;
 					printScreen("signUp was ok");
 					location.reload();
 				});
 			} else {
+				if (!myName) {
+					myName = prompt("Account name?");
+				}
 				firebase.database().ref("users/" + myName).once("value").then((dataS) => {
 					if (dataS.val().password == password) {
 						player = new Player(dataS.val());
 						//if signed up
 						alert("Open your console with F12");
-						logged = true;
 						loadWorld();
 						printScreen("You've been logged as " + myName);
 					}
