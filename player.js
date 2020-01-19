@@ -123,6 +123,7 @@ class Player {
         }
         console.log(this.shopItems);
         refreshSelect();
+        refreshShopSelect();
       }
     });
   }

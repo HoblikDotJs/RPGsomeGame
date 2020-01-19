@@ -313,6 +313,7 @@ function buyButton() {
 		let index = shopSelect.val();
 		player.buyFromShop(index);
 		refreshSelect();
+		refreshShopSelect();
 	})
 }
 
