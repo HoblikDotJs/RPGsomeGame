@@ -121,6 +121,8 @@ function showMonsterTime() {
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
 			screenButtons.monsterBtn.html("Ready!");
+			times.monsterM = 0;
+			times.monsterS = 0;
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000;
 			times.monsterM = Math.floor(time / 60);
@@ -136,6 +138,8 @@ function showShopTime() {
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
 			screenButtons.shopBtn.html("Ready!");
+			times.shopM = 0;
+			times.shopS = 0;
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000
 			times.shopM = Math.floor(time / 60);
@@ -151,6 +155,8 @@ function showQuestTime() {
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
 			screenButtons.questBtn.html("Ready!");
+			times.questS = 0;
+			times.questM = 0;
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000
 			times.questM = Math.floor(time / 60);
@@ -165,6 +171,8 @@ function showArenaTime() {
 		let oldTime = data.val();
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > 600000) {
+			times.arenaS = 0;
+			times.arenaM = 0;
 			screenButtons.arenaBtn.html("Ready!");
 		} else {
 			let time = (600000 - (newTime - oldTime)) / 1000
@@ -334,7 +342,8 @@ function refreshShopSelect() {
 		for (let i = 0; i < player.shopItems.length; i++) {
 			let itemName = player.shopItems[i].name;
 			let part = player.shopItems[i].slot;
-			shopSelect.append($("<option>").html(itemName + " (" + part + ")").val(i));
+			let price = player.shopItems[i].price;
+			shopSelect.append($("<option>").html(itemName + " (" + part + ") " + "(" + price + ")").val(i));
 		}
 	}
 }
