@@ -39,6 +39,7 @@ function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	if (profile.getId()) {
 		myName = prompt("Account name?");
+		myName = myName.split(" ")[0];
 		if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName == "" || myName == " ") {
 			printScreen("Name failed!");
 			return
@@ -54,6 +55,7 @@ function onSignIn(googleUser) {
 			} else {
 				if (!myName) {
 					myName = prompt("Account name?");
+					myName = myName.split(" ")[0];
 				}
 				firebase.database().ref("users/" + myName).once("value").then((dataS) => {
 					if (dataS.val().password == password) {
@@ -70,12 +72,15 @@ function onSignIn(googleUser) {
 }
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
+	$("#buttons").empty();
+	emptyScreen();
+	player.playFight = [];
 	let parent = $("#buttons");
-	screenButtons.arenaBtn = $("<button class= 'bl' id='arenaId'>Arena</button>").click(arenaFight);
-	screenButtons.monsterBtn = $("<button class= 'bl' id='monsterId'>Monsters</button>").click(fightMonsters);
-	screenButtons.playerBtn = $("<button class= 'bl' id='arenaId'>Player</button>").click(showPlayer);
-	screenButtons.fameBtn = $("<button class= 'bl' id='arenaId'>Hall Of Fame</button>").click(showBestPlayers);
-	screenButtons.questBtn = $("<button class= 'bl' id='arenaId'>Quests</button>").click(showQuests);
+	screenButtons.arenaBtn = $("<button class= 'bl' id='Butt'>Arena</button>").click(arenaFight);
+	screenButtons.monsterBtn = $("<button class= 'bl' id='Butt'>Monsters</button>").click(fightMonsters);
+	screenButtons.playerBtn = $("<button class= 'bl' id='Butt'>Player</button>").click(showPlayer);
+	screenButtons.fameBtn = $("<button class= 'bl' id='Butt'>Hall Of Fame</button>").click(showBestPlayers);
+	screenButtons.questBtn = $("<button class= 'bl' id='Butt'>Quests</button>").click(showQuests);
 	screenButtons.arenaBtn.hover(showArenaTime, showArenaTitle);
 	screenButtons.monsterBtn.hover(showMonsterTime, showMonsterTitle);
 	screenButtons.questBtn.hover(showQuestTime, showQuestTitle);
@@ -205,8 +210,21 @@ function showBestPlayers() {
 	});
 }
 
-function showQuests() {
-	player.showQuests();
+function showQuests() { // QUEST
+	if ((times.questS == undefined && times.questM == undefined) || (times.questM == 0 && times.questS == 0)) {
+		blank();
+		player.showQuests();
+		playFight();
+	} else {
+		blank();
+		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
+		if (times.questM && times.questS) {
+			printScreen("You need to wait " + times.questM + " : " +
+				times.questS);
+		} else {
+			printScreen("You need to wait");
+		}
+	}
 }
 
 function showShop() {
@@ -225,9 +243,12 @@ function showPlayer() {
 //--------------------------------------------------------------------------------------
 //  												 							FIGHTING FUNCTIONS
 function arenaFight() {
+	blank();
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
+		playFight();
 	} else {
+		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
 		if (times.arenaM && times.arenaS) {
 			printScreen("You must wait " + times.arenaM + ":" + times.arenaS);
 		} else {
@@ -237,9 +258,12 @@ function arenaFight() {
 }
 
 function fightMonsters() {
+	blank();
 	if ((times.monsterM == undefined && times.monsterS == undefined) || (times.monsterM == 0 && times.monsterS == 0)) {
 		player.fightNext();
+		playFight();
 	} else {
+		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
 		if (times.monsterM && times.monsterS) {
 			printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
 		} else {
@@ -315,9 +339,11 @@ function refreshShopSelect() {
 }
 //-----------------------------------------------------------------------------------------
 // 																		HELPING FUNCTIONS
-function printScreen(thing, fame) {
+function printScreen(thing, fame) { //fame/bool
 	if (typeof thing == "string") {
-		$("#screen").empty();
+		if (fame == true || fame == undefined) {
+			emptyScreen();
+		}
 		$("#screen").append("<p> " + thing + " </p>");
 	}
 	if (typeof thing == "object") {
@@ -326,5 +352,44 @@ function printScreen(thing, fame) {
 			let place = parseInt(val) + 1;
 			$("#screen").append("<p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p>");
 		}
+	}
+}
+
+function emptyScreen() {
+	$("#screen").empty();
+}
+
+function blank() {
+	$("#buttons").empty();
+	$("#shopSel").empty();
+	$("#selector").empty();
+	$("#screen").empty();
+}
+
+let indexPlayFight = 0;
+let speedPlayFight = 500;
+
+function playFight() {
+	if (player.recFight.length != 0) {
+		if (indexPlayFight == 0) {
+			speedPlayFight = 500;
+			$("#buttons").append($("<button id='skipB'>Skip</button>").click(() => {
+				speedPlayFight = 1;
+			}));
+		}
+		let fight = player.recFight;
+		player.recFight;
+		printScreen(fight[indexPlayFight], false);
+		indexPlayFight++;
+		if (indexPlayFight != fight.length) {
+			setTimeout(playFight, speedPlayFight);
+		} else {
+			player.recFight = [];
+			indexPlayFight = 0;
+			$("#buttons").empty();
+			$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
+		}
+	} else {
+		setTimeout(playFight, 500);
 	}
 }

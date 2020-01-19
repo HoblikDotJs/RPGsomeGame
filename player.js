@@ -10,6 +10,7 @@ let baseCharacter = {
 
 class newPlayer {
   constructor(name, password) {
+    this.inQuest = false;
     this.name = name;
     this.password = password;
     this.bossLvl = parseInt(0);
@@ -48,6 +49,7 @@ class newPlayer {
 }
 class Player {
   constructor(obj) {
+    this.inQuest = obj.inQuest || false;
     this.upgradeCharacter = obj.upgradeCharacter;
     this.character = baseCharacter;
     this.gold = obj.gold;
@@ -62,6 +64,7 @@ class Player {
     this.messages = obj.messages || [];
     this.shopItems = obj.shopItems;
     this.times = obj.times;
+    this.recFight = [];
     this.readMessages();
     this.calculateCharacter();
   }
@@ -173,8 +176,6 @@ class Player {
           this.xp += this.lvl;
         }
         this.saveState();
-      } else {
-        printScreen("You cant now!!");
       }
       firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
     });
@@ -240,7 +241,6 @@ class Player {
           let names = Object.keys(obj);
           let other = Math.floor(Math.random() * names.length);
           let index = names[other];
-          printScreen("Found " + index);
           return obj[index];
         }
 
@@ -285,8 +285,6 @@ class Player {
               }
             }
             this.backpack.push(weapons[slot][drop]);
-            printScreen("You won " + enemies[this.bossLvl].reward);
-            printScreen("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
             console.log("You won " + enemies[this.bossLvl].reward);
             console.log("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
             this.gold += parseInt(enemies[this.bossLvl].gold);
@@ -298,68 +296,80 @@ class Player {
           this.times.monsters = Date.parse(new Date());
           firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
-      } else {
-        if (times.monsterS && times.monsterM) {
-          printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
-        } else {
-          printScreen("You need to wait");
-        }
       }
     });
   }
 
   attack(others) {
+    this.recFight = [];
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
     console.log(this.name + " attacked " + others.name);
-    printScreen(this.name + " attacked " + others.name);
+    this.recFight.push(this.name + " attacked " + others.name);
     console.log("-----------------------------------------------------------------------------------");
+    this.recFight.push("-----------------------------------------------------------------------------------")
     while (othersHp > 0 && yourHp > 0) {
       //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
         console.log(this.name + " regenerated " + this.character.regen + " hp");
+        this.recFight.push(this.name + " regenerated " + this.character.regen + " hp");
         this.character.hp += this.character.regen;
         let critMul = Math.random() * 10;
         othersHp -= (this.character.damage - others.character.armor / 2) * critMul;
-        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor / 2) * critMul) + " damage.")
+        console.log(this.name + " crit " + Math.floor((this.character.damage - others.character.armor / 2) * critMul) + " damage.");
+        this.recFight.push(this.name + " crit " + Math.floor((this.character.damage - others.character.armor / 2) * critMul) + " damage.");
         if (othersHp <= 0) {
           console.log(this.name + " won!");
+          this.recFight.push(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
+          this.recFight.push("-----------------------------------------------------------------------------------");
           return true
         }
       } else if ((Math.random() * 100) < this.character.luck) { // luck means how many % will he hit
         othersHp -= this.character.damage - others.character.armor / 2;
         console.log(this.name + " did " + (this.character.damage - others.character.armor / 2) + " damage.");
+        this.recFight.push(this.name + " did " + (this.character.damage - others.character.armor / 2) + " damage.");
         if (othersHp <= 0) {
           console.log(this.name + " won!");
+          this.recFight.push(this.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
+          this.recFight.push("-----------------------------------------------------------------------------------");
           return true
         }
       } else {
         console.log(this.name + " missed");
+        this.recFight.push(this.name + " missed");
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if ((Math.random() * 100) < others.character.luck / (Math.random() * 20)) {
         others.character.hp += others.character.regen;
         console.log(others.name + " regenerated " + others.character.regen + " hp");
+        this.recFight.push(others.name + " regenerated " + others.character.regen + " hp");
         let critMul = Math.random() * 10;
         yourHp -= (others.character.damage - this.character.armor / 2) * critMul;
         console.log(others.name + " crit " + Math.floor((others.character.damage - this.character.armor / 2) * critMul) + " damage.")
+        this.recFight.push(others.name + " crit " + Math.floor((others.character.damage - this.character.armor / 2) * critMul) + " damage.")
         if (yourHp <= 0) {
           console.log(others.name + " won!");
+          this.recFight.push(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
+          this.recFight.push("-----------------------------------------------------------------------------------");
           return false
         }
       } else if ((Math.random() * 100) < others.character.luck) {
         yourHp -= others.character.damage - this.character.armor / 2;
         console.log(others.name + " did " + (others.character.damage - this.character.armor / 2) + " damage.");
+        this.recFight.push(others.name + " did " + (others.character.damage - this.character.armor / 2) + " damage.");
         if (yourHp <= 0) {
           console.log(others.name + " won!");
+          this.recFight.push(others.name + " won!");
           console.log("-----------------------------------------------------------------------------------");
+          this.recFight.push("-----------------------------------------------------------------------------------");
           return false
         }
       } else {
         console.log(others.name + " missed");
+        this.recFight.push(others.name + " missed");
       }
     }
   }

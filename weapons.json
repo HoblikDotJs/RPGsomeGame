@@ -212,12 +212,37 @@
     }
   },
   "Npcs" : {
-    "ZMRD" : "ZMRD"
+    "Crystal Wizard" : "Crystal Wizard",
+    "Eastern Warrior" : "Eastern Warrior",
+    "King of Illussions" : "King of Illussions",
+    "Lurker" : "Lurker",
+    "Minotaurus" : "Minotaurus",
+    "Undead Farmer" : "Undead Farmer"
   },
   "Quests" : {
-    "jdi a chcipni" : {
-      "description" : "chciiipni",
-      "name" : "jdi a chcipni"
+    "Burnt Fields" : {
+      "description" : "Burnt Fields",
+      "name" : "Burnt Fields"
+    },
+    "Forest of Shadows" : {
+      "description" : "Forest of shadows",
+      "name" : "Forest of Shadows"
+    },
+    "Frozen Mines" : {
+      "description" : "Frozen Mines",
+      "name" : "Frozen Mines"
+    },
+    "Plains of Phantoms" : {
+      "description" : "Plains ",
+      "name" : "Plains of Phantoms"
+    },
+    "The Lake of Leviathan" : {
+      "description" : "The lake of Leviathan",
+      "name" : "The Lake of Leviathan"
+    },
+    "The Mountain of Sunset" : {
+      "description" : "Sunset Mountain",
+      "name" : "The Mountain of Sunset"
     }
   },
   "body" : {
