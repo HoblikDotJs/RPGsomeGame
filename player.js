@@ -302,6 +302,7 @@ class Player {
   }
 
   attack(others) {
+    let round = 0;
     this.recFight = [];
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
@@ -310,6 +311,12 @@ class Player {
     console.log("-----------------------------------------------------------------------------------");
     this.recFight.push("-----------------------------------------------------------------------------------")
     while (othersHp > 0 && yourHp > 0) {
+      round++;
+      if (round == 100) {
+        this.recFight.push("It is a draw");
+        console.log("It is a draw");
+        return false
+      }
       //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
         console.log(this.name + " regenerated " + this.character.regen + " hp");
