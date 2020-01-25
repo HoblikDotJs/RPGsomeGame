@@ -1,5 +1,10 @@
 let player, myName;
 let password, select, shopSelect;
+let loadingTimeout;
+let indexPlayFight = 0;
+let speedPlayFight = 500;
+let enemies = [];
+let npcArr = [];
 let times = {
 	monsterS: undefined,
 	monsterM: undefined,
@@ -11,7 +16,8 @@ let times = {
 	questS: undefined,
 }
 let screenButtons = {
-	shopBtn: undefined,
+	showShopBtn: undefined,
+	reloadShopBtn: undefined,
 	putOnBtn: undefined,
 	arenaBtn: undefined,
 	playerBtn: undefined,
@@ -20,8 +26,6 @@ let screenButtons = {
 	questBtn: undefined,
 	buyBtn: undefined,
 }
-let enemies = [];
-let npcArr = [];
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
@@ -33,161 +37,45 @@ function setup() {
 	});
 }
 //----------------------------------------------------------------------------------------- 
-//                                SIGN IN/UP
+//                               			 SIGN IN/UP
 
-function onSignIn(googleUser) {
-	var profile = googleUser.getBasicProfile();
-	if (profile.getId()) {
-		myName = prompt("Account name?");
-		myName = myName.split(" ")[0];
-		if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName == "" || myName == " ") {
-			printScreen("Name failed!");
-			return
-		}
-		password = profile.getId();
-		firebase.database().ref("users/" + myName).once("value").then((dataS) => {
-			if (dataS.val() == undefined || dataS.val() == null) {
-				let pl = new newPlayer(myName, password);
-				firebase.database().ref("users/" + myName).set(pl, () => {
-					printScreen("signUp was ok");
-					location.reload();
-				});
-			} else {
-				if (!myName) {
-					myName = prompt("Account name?");
-					myName = myName.split(" ")[0];
-				}
-				firebase.database().ref("users/" + myName).once("value").then((dataS) => {
-					if (dataS.val().password == password) {
-						player = new Player(dataS.val());
-						//if signed up
-						alert("Open your console with F12");
-						loadWorld();
-						printScreen("You've been logged as " + myName);
-					}
-				});
-			}
-		});
-	}
-}
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
+	clearTimeout(loadingTimeout);
+	changeBackground("village.jpg")
 	$("#buttons").empty();
+	$("#shopSel").empty();
+	$("#selector").empty();
 	emptyScreen();
 	player.playFight = [];
 	let parent = $("#buttons");
-	screenButtons.arenaBtn = $("<button class= 'bl' id='Butt'>Arena</button>").click(arenaFight);
-	screenButtons.monsterBtn = $("<button class= 'bl' id='Butt'>Monsters</button>").click(fightMonsters);
-	screenButtons.playerBtn = $("<button class= 'bl' id='Butt'>Player</button>").click(showPlayer);
-	screenButtons.fameBtn = $("<button class= 'bl' id='Butt'>Hall Of Fame</button>").click(showBestPlayers);
-	screenButtons.questBtn = $("<button class= 'bl' id='Butt'>Quests</button>").click(showQuests);
-	screenButtons.arenaBtn.hover(showArenaTime, showArenaTitle);
-	screenButtons.monsterBtn.hover(showMonsterTime, showMonsterTitle);
-	screenButtons.questBtn.hover(showQuestTime, showQuestTitle);
+	screenButtons.arenaBtn = $("<button class='btn btn-dark' id='arenaButt'>Arena</button>").click(arenaFight);
+	screenButtons.monsterBtn = $("<button class='btn btn-dark' id='monstersButt'>Monsters</button>").click(fightMonsters);
+	screenButtons.playerBtn = $("<button class='btn btn-dark' id='playerButt'>Player</button>").click(showPlayer);
+	screenButtons.fameBtn = $("<button class='btn btn-dark' id='fameButt'>Hall Of Fame</button>").click(showBestPlayers);
+	screenButtons.questBtn = $("<button class='btn btn-dark' id='questButt'>Quests</button>").click(showQuests);
+	screenButtons.showShopBtn = $("<button class='btn btn-dark' id='showShopButt'>Shop</button>").click(redirectToShop);
+	screenButtons.arenaBtn.mouseover(showArenaTime);
+	screenButtons.arenaBtn.mouseout(showArenaTitle);
+	screenButtons.monsterBtn.mouseover(showMonsterTime);
+	screenButtons.monsterBtn.mouseout(showMonsterTitle);
+	screenButtons.questBtn.mouseover(showQuestTime);
+	screenButtons.questBtn.mouseout(showQuestTitle);
 	parent.append(screenButtons.arenaBtn);
 	parent.append(screenButtons.monsterBtn);
 	parent.append(screenButtons.playerBtn);
 	parent.append(screenButtons.fameBtn);
 	parent.append(screenButtons.questBtn);
-	makeSelect();
-	putOnButton();
-	makeShopSelect();
-	buyButton();
-	reloadShopBtn();
+	parent.append(screenButtons.showShopBtn);
 }
-//-----------------------------------------------------------------------------------------
-//                                     SHOW FUNCTIONS
-
-function showArenaTitle() {
-	screenButtons.arenaBtn.html("Arena");
-}
-
-function showMonsterTitle() {
-	screenButtons.monsterBtn.html("Monsters");
-}
-
-function showQuestTitle() {
-	screenButtons.questBtn.html("Quests");
-}
-
-function showShopTitle() {
-	screenButtons.shopBtn.html("🔄");
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-function showMonsterTime() {
-	firebase.database().ref("users/" + player.name + "/times/monsters").once("value", (data) => {
-		let oldTime = data.val();
-		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
-			screenButtons.monsterBtn.html("Ready!");
-			times.monsterM = 0;
-			times.monsterS = 0;
-		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000;
-			times.monsterM = Math.floor(time / 60);
-			times.monsterS = Math.floor(time - times.monsterM * 60);
-			screenButtons.monsterBtn.html(times.monsterM + " : " + times.monsterS);
-		}
-	})
-}
-
-function showShopTime() {
-	firebase.database().ref("users/" + player.name + "/times/shop").once("value", (data) => {
-		let oldTime = data.val();
-		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
-			screenButtons.shopBtn.html("Ready!");
-			times.shopM = 0;
-			times.shopS = 0;
-		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000
-			times.shopM = Math.floor(time / 60);
-			times.shopS = Math.floor(time - times.shopM * 60);
-			screenButtons.shopBtn.html(times.shopM + " : " + times.shopS);
-		}
-	});
-}
-
-function showQuestTime() {
-	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (data) => {
-		let oldTime = data.val();
-		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
-			screenButtons.questBtn.html("Ready!");
-			times.questS = 0;
-			times.questM = 0;
-		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000
-			times.questM = Math.floor(time / 60);
-			times.questS = Math.floor(time - times.questM * 60);
-			screenButtons.questBtn.html(times.questM + " : " + times.questS);
-		}
-	});
-}
-
-function showArenaTime() {
-	firebase.database().ref("users/" + player.name + "/times/arena").once("value", (data) => {
-		let oldTime = data.val();
-		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
-			times.arenaS = 0;
-			times.arenaM = 0;
-			screenButtons.arenaBtn.html("Ready!");
-		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000
-			times.arenaM = Math.floor(time / 60);
-			times.arenaS = Math.floor(time - times.arenaM * 60);
-			screenButtons.arenaBtn.html(times.arenaM + " : " + times.arenaS);
-		}
-	});
-}
-
-
-
 //---------------------------------------------------------------------------------------
 //                                       BUTTON CLICKS
 function showBestPlayers() {
+	console.log("Currently unavailable :(");
+	blank();
+	addBackButton();
+	changeBackground("blank.jpg");
+	/*
 	let bestPlayers = [];
 	firebase.database().ref("users").on("value", function (snapshot) {
 		snapshot.forEach(function (data) {
@@ -215,48 +103,58 @@ function showBestPlayers() {
 			bpf.push(bestPlayers[2].fame);
 		}
 		printScreen(bp, bpf);
+	});*/
+}
+
+function showQuests() {
+	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (s) => {
+		let oldTime = s.val();
+		let newTime = Date.parse(new Date());
+		if (newTime - oldTime > 600000) {
+			if (player.onQuest) {
+				player.doQuest();
+			}
+			blank();
+			changeBackground("blank.jpg");
+			addBackButton();
+			let quests = randomQuests(3);
+			let selected = 0;
+			$("#screen").append($("<p id='des'>" + quests[selected].description + "</p>"))
+			$("#screen").append($("<center><div> <ul id='questSelector' class='selectpicker' data-style='btn-dark'> </ul> </div></center>"));
+			for (let i = 0; i < quests.length; i++) {
+				$("#questSelector").append($("<li>" + quests[i].name + "</li>").click(() => {
+					selected = i;
+					$("#des").html(quests[selected].description);
+				}));
+			}
+			$("#screen").append($("<button class='btn'>GO</button>").click(() => {
+				player.onQuest = true;
+				firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
+				player.saveState();
+				showQuests();
+			}));
+		} else {
+			//todo loading bar...
+			blank();
+			addBackButton();
+			changeBackground("blank.jpg");
+			let time = (600000 - (newTime - oldTime)) / 1000
+			let min = Math.floor(time / 60);
+			let sec = Math.floor(time - min * 60);
+			printScreen(min + " : " + sec);
+			loadingTimeout = setTimeout(showQuests, 1000);
+		}
 	});
 }
 
-function showQuests() { // QUEST
-	if ((times.questS == undefined && times.questM == undefined) || (times.questM == 0 && times.questS == 0)) {
-		blank();
-		player.showQuests();
-		playFight();
-	} else {
-		blank();
-		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
-		if (times.questM && times.questS) {
-			printScreen("You need to wait " + times.questM + " : " +
-				times.questS);
-		} else {
-			printScreen("You need to wait");
-		}
-	}
-}
-
-function showShop() {
-	player.showShop();
-	refreshShopSelect();
-}
-
-function showPlayer() {
-	console.log(player.character);
-	console.log("You have " + player.gold + " gold");
-	console.log("You are lvl " + player.lvl);
-	console.log("You have " + player.xp + " xp");
-	console.log("You have " + player.fame + " fame");
-	console.log(player.slots);
-}
-//--------------------------------------------------------------------------------------
-//  												 							FIGHTING FUNCTIONS
 function arenaFight() {
 	blank();
+	changeBackground("blank.jpg");
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
 		playFight();
 	} else {
-		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
+		addBackButton();
 		if (times.arenaM && times.arenaS) {
 			printScreen("You must wait " + times.arenaM + ":" + times.arenaS);
 		} else {
@@ -267,11 +165,12 @@ function arenaFight() {
 
 function fightMonsters() {
 	blank();
+	changeBackground("blank.jpg");
 	if ((times.monsterM == undefined && times.monsterS == undefined) || (times.monsterM == 0 && times.monsterS == 0)) {
 		player.fightNext();
 		playFight();
 	} else {
-		$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
+		addBackButton();
 		if (times.monsterM && times.monsterS) {
 			printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
 		} else {
@@ -279,88 +178,21 @@ function fightMonsters() {
 		}
 	}
 }
-//--------------------------------------------------------------------------------------------
-// 																					SELECT FUNCTIONS
-function makeSelect() {
-	select = $("<select>").appendTo("#selector");
-	select.addClass("sel");
-	refreshSelect();
-}
 
-function putOnButton() {
-	screenButtons.putOnBtn = $("<button>").appendTo("#selector");
-	screenButtons.putOnBtn.addClass("sel");
-	screenButtons.putOnBtn.html("Put on");
-	screenButtons.putOnBtn.click(() => {
-		let index = select.val();
-		player.putOn(player.backpack[index]);
-		refreshSelect();
-	})
-}
-
-function refreshSelect() {
-	select.empty();
-	for (let i = 0; i < player.backpack.length; i++) {
-		let itemName = player.backpack[i].name;
-		let part = player.backpack[i].slot;
-		select.append($("<option>").html(itemName + " (" + part + ")").val(i));
-	}
-}
-//////////////////////////////////////////////////////////////
-function makeShopSelect() {
-	shopSelect = $("<select>").appendTo("#shopSel");
-	shopSelect.addClass("sel");
-	refreshShopSelect();
-}
-
-function buyButton() {
-	screenButtons.buyBtn = $("<button>").appendTo("#shopSel");
-	screenButtons.buyBtn.addClass("sel");
-	screenButtons.buyBtn.html("Buy");
-	screenButtons.buyBtn.click(() => {
-		let index = shopSelect.val();
-		player.buyFromShop(index);
-		refreshSelect();
-		refreshShopSelect();
-	})
-}
-
-function reloadShopBtn() {
-	screenButtons.shopBtn = $("<button>").appendTo("#shopSel");
-	screenButtons.shopBtn.addClass("sel");
-	screenButtons.shopBtn.html("🔄");
-	screenButtons.shopBtn.hover(showShopTime, showShopTitle);
-	screenButtons.shopBtn.click(() => {
-		showShop();
-
-	});
-}
-
-function refreshShopSelect() {
-	shopSelect.empty();
-	if (player.shopItems) {
-		for (let i = 0; i < player.shopItems.length; i++) {
-			let itemName = player.shopItems[i].name;
-			let part = player.shopItems[i].slot;
-			let price = player.shopItems[i].price;
-			shopSelect.append($("<option>").html(itemName + " (" + part + ") " + "(" + price + ")").val(i));
-		}
-	}
-}
 //-----------------------------------------------------------------------------------------
 // 																		HELPING FUNCTIONS
-function printScreen(thing, fame) { //fame/bool
+function printScreen(thing, deleting, fame) { //str/bool
 	if (typeof thing == "string") {
-		if (fame == true || fame == undefined) {
+		if (deleting == true || deleting == undefined) {
 			emptyScreen();
 		}
-		$("#screen").append("<p> " + thing + " </p>");
+		$("#screen").append("<b><p> " + thing + " </p></b>");
 	}
 	if (typeof thing == "object") {
 		$("#screen").empty();
 		for (let val in thing) {
 			let place = parseInt(val) + 1;
-			$("#screen").append("<p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p>");
+			$("#screen").append("<b><p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p></b>");
 		}
 	}
 }
@@ -369,21 +201,19 @@ function emptyScreen() {
 	$("#screen").empty();
 }
 
-function blank() {
+function blank() { // deletes all el.
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
-	$("#screen").empty();
+	emptyScreen();
 }
 
-let indexPlayFight = 0;
-let speedPlayFight = 500;
 
 function playFight() {
 	if (player.recFight.length != 0) {
 		if (indexPlayFight == 0) {
 			speedPlayFight = 500;
-			$("#buttons").append($("<button id='skipB'>Skip</button>").click(() => {
+			$("#buttons").append($("<button class='btn btn-dark' id='skipB'>Skip</button>").click(() => {
 				speedPlayFight = 1;
 			}));
 		}
@@ -397,9 +227,31 @@ function playFight() {
 			player.recFight = [];
 			indexPlayFight = 0;
 			$("#buttons").empty();
-			$("#buttons").append($("<button id='bb'>Back</button>").click(loadWorld));
+			addBackButton();
 		}
 	} else {
 		setTimeout(playFight, 500);
 	}
+}
+
+function addBackButton() {
+	$("#buttons").append($("<button class='btn btn-dark' id='bb'>Back</button>").click(loadWorld));
+}
+
+function randomQuests(num) {
+	let quests = [];
+	let returnList = [];
+	for (quest in weapons["Quests"]) {
+		quests.push(weapons["Quests"][quest]);
+	}
+	for (let i = 0; i < num; i++) {
+		let index = Math.floor(Math.random() * quests.length);
+		returnList.push(quests[index]);
+		quests.splice(index, 1);
+	}
+	return returnList;
+}
+
+function changeBackground(str) {
+	$("body").css("background-image", `url(${str})`);
 }

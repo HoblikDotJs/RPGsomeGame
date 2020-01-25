@@ -10,7 +10,7 @@ let baseCharacter = {
 
 class newPlayer {
   constructor(name, password) {
-    this.inQuest = false;
+    this.onQuest = false;
     this.name = name;
     this.password = password;
     this.bossLvl = parseInt(0);
@@ -49,7 +49,7 @@ class newPlayer {
 }
 class Player {
   constructor(obj) {
-    this.inQuest = obj.inQuest || false;
+    this.onQuest = obj.onQuest || false;
     this.upgradeCharacter = obj.upgradeCharacter;
     this.character = baseCharacter;
     this.gold = obj.gold;
@@ -164,22 +164,16 @@ class Player {
 
   //-------------------------------------------------------------------------------------
   //                                        QUESTS
-  showQuests() {
-    firebase.database().ref("users/" + this.name + "/times/quest").on("value", (data) => {
-      let oldDate = data.val();
-      let newDate = Date.parse(new Date());
-      if (newDate - oldDate > 600000) {
-        let NPC = this.makeNpc();
-        if (this.attack(NPC)) {
-          this.xp += this.lvl * 5;
-          this.gold += this.lvl * 10;
-        } else {
-          this.xp += this.lvl;
-        }
-        this.saveState();
-      }
-      firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
-    });
+  doQuest() {
+    let NPC = this.makeNpc();
+    if (this.attack(NPC)) {
+      this.xp += this.lvl * 5;
+      this.gold += this.lvl * 10;
+    } else {
+      this.xp += this.lvl;
+    }
+    this.onQuest = false;
+    this.saveState();
   }
 
   makeNpc() {
@@ -196,6 +190,7 @@ class Player {
   //-------------------------------------------------------------------------------------
   saveState() {
     this.lvlUp();
+    firebase.database().ref("users/" + this.name + "/onQuest").set(this.onQuest);
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(parseInt(this.gold));
     firebase.database().ref("users/" + this.name + "/character").set(this.character);
@@ -209,7 +204,7 @@ class Player {
   }
 
   putOn(object) {
-    if (this.backpack.indexOf(object) != -1) {
+    if (this.backpack.indexOf(object) != -1 && object != undefined) {
       let prevItem = this.slots[object.slot];
       this.slots[object.slot] = object;
       this.backpack.splice(this.backpack.indexOf(object), 1);
@@ -224,7 +219,7 @@ class Player {
     }
   }
 
-  readMessages() {
+  readMessages() { // TODO!!
     for (let i = 0; i < this.messages.length; i++) {
       console.log(this.messages[i]);
     }
@@ -301,7 +296,7 @@ class Player {
     });
   }
 
-  attack(others) {
+  attack(others) { // redo!!
     let round = 0;
     this.recFight = [];
     let yourHp = this.character.hp;
@@ -317,7 +312,6 @@ class Player {
         console.log("It is a draw");
         return false
       }
-      //  console.log(othersHp, yourHp)
       if ((Math.random() * 100) < this.character.luck / (Math.random() * 20)) {
         console.log(this.name + " regenerated " + this.character.regen + " hp");
         this.recFight.push(this.name + " regenerated " + this.character.regen + " hp");
@@ -381,6 +375,9 @@ class Player {
       }
     }
   }
+
+
+
   //-------------------------------------------------------------------------------------
   //                                    HELP FUNCTIONS
   lvlUp() {

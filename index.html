@@ -5,6 +5,9 @@
   <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <meta name="google-signin-client_id"
     content="442990658970-ovpt3nncr2rg4ji6oudcir0a3bq3m8cm.apps.googleusercontent.com">
@@ -25,9 +28,12 @@
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
   </script>
-  <script src="enemy.js"></script>
+  <script src="loadingEN.js"></script>
   <script src="player.js"></script>
   <script src="sketch.js"></script>
+  <script src="shop.js"></script>
+  <script src="buttons.js"></script>
+  <script src="bagpackFront.js"></script>
   <script>
     setup();
   </script>
@@ -35,8 +41,57 @@
 
 <body>
   <div id="logButtons">
-    <button href="#" onclick="signOut();">Sign out</button>
+    <button href="#" class="btn btn-secondary" onclick="signOut();">Sign out</button>
+    <!--style="margin-top: 550px;-->
     <script>
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        let Id = profile.getId();
+        if (Id) {
+          firebase.database().ref("users").once("value", (s) => {
+            let users = s.val();
+            for (let user in users) {
+              if (users[user].password == Id) {
+                myName = users[user].name;
+              }
+            }
+            if (!myName) {
+              myName = prompt("Account name?");
+            }
+            myName = myName.split(" ")[0];
+            if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName ==
+              "" || myName == " ") {
+              printScreen("Name failed!");
+              return
+            }
+            password = profile.getId();
+            firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+              if (dataS.val() == undefined || dataS.val() == null) {
+                let pl = new newPlayer(myName, password);
+                firebase.database().ref("users/" + myName).set(pl, () => {
+                  printScreen("signUp was ok");
+                  location.reload();
+                });
+              } else {
+                if (!myName) {
+                  myName = prompt("Account name?");
+                  myName = myName.split(" ")[0];
+                }
+                firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+                  if (dataS.val().password == password) {
+                    player = new Player(dataS.val());
+                    //if signed up
+                    //alert("Open your console with F12");
+                    loadWorld();
+                    printScreen("You've been logged as " + myName);
+                  }
+                });
+              }
+            });
+          });
+        }
+      }
+
       function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
@@ -44,7 +99,6 @@
         });
       }
     </script>
-
   </div>
   <div id="buttons">
     <div class="g-signin2" data-onsuccess="onSignIn"> </div>
@@ -58,7 +112,7 @@
   </div>
   <style>
     body {
-      background-image: url("bck.jpg");
+      background-image: url("village.jpg");
       background-size: cover;
     }
 
@@ -67,20 +121,31 @@
       padding: 0%;
     }
 
-    .bl {
+    .cent {
+      position: absolute;
+    }
+
+    .btn-dark {
       display: block;
-      height: 3%;
-      margin-bottom: 3%;
-      margin-top: 2%;
-      margin-left: 3%;
+      width: 100px;
     }
 
     .sel {
       display: inline;
-      height: 3%;
-      margin-left: 3%;
+      border-radius: 10px;
+      width: 120px;
+      height: 2em;
     }
   </style>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
 </body>
 
 </html>
