@@ -25,6 +25,7 @@ let screenButtons = {
 	fameBtn: undefined,
 	questBtn: undefined,
 	buyBtn: undefined,
+	signout: undefined,
 }
 
 //--------------------------------------------------------------------------------------------
@@ -36,8 +37,6 @@ function setup() {
 		loadNpcs();
 	});
 }
-//----------------------------------------------------------------------------------------- 
-//                               			 SIGN IN/UP
 
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
@@ -46,9 +45,10 @@ function loadWorld() {
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
-	emptyScreen();
+	blank();
 	player.playFight = [];
 	let parent = $("#buttons");
+	screenButtons.signout = $("<button class='btn btn-dark' id='signoutButt'>Sign Out</button>").click(signOut);
 	screenButtons.arenaBtn = $("<button class='btn btn-dark' id='arenaButt'>Arena</button>").click(arenaFight);
 	screenButtons.monsterBtn = $("<button class='btn btn-dark' id='monstersButt'>Monsters</button>").click(fightMonsters);
 	screenButtons.playerBtn = $("<button class='btn btn-dark' id='playerButt'>Player</button>").click(showPlayer);
@@ -61,6 +61,7 @@ function loadWorld() {
 	screenButtons.monsterBtn.mouseout(showMonsterTitle);
 	screenButtons.questBtn.mouseover(showQuestTime);
 	screenButtons.questBtn.mouseout(showQuestTitle);
+	parent.append(screenButtons.signout);
 	parent.append(screenButtons.arenaBtn);
 	parent.append(screenButtons.monsterBtn);
 	parent.append(screenButtons.playerBtn);
@@ -70,6 +71,7 @@ function loadWorld() {
 }
 //---------------------------------------------------------------------------------------
 //                                       BUTTON CLICKS
+
 function showBestPlayers() {
 	console.log("Currently unavailable :(");
 	blank();
@@ -113,35 +115,42 @@ function showQuests() {
 		if (newTime - oldTime > 600000) {
 			if (player.onQuest) {
 				player.doQuest();
-			}
-			blank();
-			changeBackground("blank.jpg");
-			addBackButton();
-			let quests = randomQuests(3);
-			let selected = 0;
-			$("#screen").append($("<p id='des'>" + quests[selected].description + "</p>"))
-			$("#screen").append($("<center><div> <ul id='questSelector' class='selectpicker' data-style='btn-dark'> </ul> </div></center>"));
-			for (let i = 0; i < quests.length; i++) {
-				$("#questSelector").append($("<li>" + quests[i].name + "</li>").click(() => {
-					selected = i;
-					$("#des").html(quests[selected].description);
+				blank();
+				changeBackground("blank.jpg");
+				addBackButton();
+				playFight(false);
+			} else {
+				blank();
+				changeBackground("blank.jpg");
+				addBackButton();
+				let quests = randomQuests(3);
+				let selected = 0;
+				$("#screen").append($("<center><div class='container'><div id='questDiv'class='row'><div class='col-lg-8'> <ul id='questSelector' class='selectpicker' data-style='btn-dark'> </ul> </div></div></div></center>"));
+				$("#questDiv").append($("<div class='col-lg-4' id='questDescription'><p id='des'>" + quests[selected].description + "</p></div>"))
+				for (let i = 0; i < quests.length; i++) {
+					$("#questSelector").append($("<li>" + quests[i].name + "</li>").click(() => {
+						selected = i;
+						$("#des").html(quests[selected].description);
+					}));
+				}
+				$("#questDescription").append($("<div class='row'><div class='col-lg-12'><button class='btn btn-dark'>GO</button></div></div>").click(() => {
+					player.onQuest = true;
+					firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
+					player.saveState();
+					showQuests();
 				}));
 			}
-			$("#screen").append($("<button class='btn'>GO</button>").click(() => {
-				player.onQuest = true;
-				firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
-				player.saveState();
-				showQuests();
-			}));
 		} else {
-			//todo loading bar...
 			blank();
 			addBackButton();
 			changeBackground("blank.jpg");
+			$("#screen").append(progressBarCode);
 			let time = (600000 - (newTime - oldTime)) / 1000
 			let min = Math.floor(time / 60);
 			let sec = Math.floor(time - min * 60);
-			printScreen(min + " : " + sec);
+			let remaining = 100 - (time / 600) * 100;
+			$("#pb").css("width", remaining + "%");
+			$("#pb").html(min + " : " + sec);
 			loadingTimeout = setTimeout(showQuests, 1000);
 		}
 	});
@@ -186,13 +195,13 @@ function printScreen(thing, deleting, fame) { //str/bool
 		if (deleting == true || deleting == undefined) {
 			emptyScreen();
 		}
-		$("#screen").append("<b><p> " + thing + " </p></b>");
+		$("#textBox").append("<b><p> " + thing + " </p></b>");
 	}
 	if (typeof thing == "object") {
-		$("#screen").empty();
+		$("#textBox").empty();
 		for (let val in thing) {
 			let place = parseInt(val) + 1;
-			$("#screen").append("<b><p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p></b>");
+			$("#textBox").append("<b><p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p></b>");
 		}
 	}
 }
@@ -205,11 +214,13 @@ function blank() { // deletes all el.
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
+	$("#textBox").empty();
 	emptyScreen();
 }
 
 
-function playFight() {
+function playFight(bool) {
+	let del = bool || false;
 	if (player.recFight.length != 0) {
 		if (indexPlayFight == 0) {
 			speedPlayFight = 500;
@@ -219,7 +230,7 @@ function playFight() {
 		}
 		let fight = player.recFight;
 		player.recFight;
-		printScreen(fight[indexPlayFight], false);
+		printScreen(fight[indexPlayFight], del);
 		indexPlayFight++;
 		if (indexPlayFight != fight.length) {
 			setTimeout(playFight, speedPlayFight);
@@ -254,4 +265,67 @@ function randomQuests(num) {
 
 function changeBackground(str) {
 	$("body").css("background-image", `url(${str})`);
+}
+
+
+let progressBarCode = '<div class="progress" style="width:400px"> <div class="progress-bar bg-dark" id="pb" style="width:0% aria-valuemin ="0"aria-valuemax="100""></div> </div>'
+
+function updateTimes(str) {
+	firebase.database().ref("users/" + player.name + "/times").once("value", (data) => {
+		if (str === "load") { // just for loading into the game 
+			loadWorld();
+			printScreen("You've been logged as " + myName);
+			setInterval(updateTimes, 1000);
+		}
+		let serverTimes = data.val();
+		let oldTime = serverTimes.monsters;
+		let newTime = Date.parse(new Date());
+		if (newTime - oldTime > 600000) {
+			times.monsterM = 0;
+			times.monsterS = 0;
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000;
+			times.monsterM = Math.floor(time / 60);
+			times.monsterS = Math.floor(time - times.monsterM * 60);
+		}
+		oldTime = serverTimes.shop
+		if (newTime - oldTime > 600000) {
+			times.shopM = 0;
+			times.shopS = 0;
+
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000
+			times.shopM = Math.floor(time / 60);
+			times.shopS = Math.floor(time - times.shopM * 60);
+		}
+		oldTime = serverTimes.arena;
+		if (newTime - oldTime > 600000) {
+			times.arenaS = 0;
+			times.arenaM = 0;
+
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000
+			times.arenaM = Math.floor(time / 60);
+			times.arenaS = Math.floor(time - times.arenaM * 60);
+		}
+		oldTime = serverTimes.quest;
+		if (newTime - oldTime > 600000) {
+			times.questS = 0;
+			times.questM = 0;
+
+		} else {
+			let time = (600000 - (newTime - oldTime)) / 1000
+			times.questM = Math.floor(time / 60);
+			times.questS = Math.floor(time - times.questM * 60);
+		}
+		if (times.questM == 0 && times.questS == 0 && player.onQuest) {
+			screenButtons.questBtn.removeClass();
+			screenButtons.questBtn.addClass("btn");
+			screenButtons.questBtn.addClass("btn-success");
+		} else {
+			screenButtons.questBtn.addClass("btn");
+			screenButtons.questBtn.addClass("btn-dark");
+		}
+
+	});
 }

@@ -7,12 +7,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <meta name="google-signin-client_id"
     content="442990658970-ovpt3nncr2rg4ji6oudcir0a3bq3m8cm.apps.googleusercontent.com">
-
-
 
   <script>
     var firebaseConfig = {
@@ -40,79 +37,76 @@
 </head>
 
 <body>
-  <div id="logButtons">
-    <button href="#" class="btn btn-secondary" onclick="signOut();">Sign out</button>
-    <!--style="margin-top: 550px;-->
-    <script>
-      function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        let Id = profile.getId();
-        if (Id) {
-          firebase.database().ref("users").once("value", (s) => {
-            let users = s.val();
-            for (let user in users) {
-              if (users[user].password == Id) {
-                myName = users[user].name;
+  <script>
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      let Id = profile.getId();
+      if (Id) {
+        firebase.database().ref("users").once("value", (s) => {
+          let users = s.val();
+          for (let user in users) {
+            if (users[user].password == Id) {
+              myName = users[user].name;
+            }
+          }
+          if (!myName) {
+            myName = prompt("Account name?");
+          }
+          myName = myName.split(" ")[0];
+          if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName ==
+            "" || myName == " ") {
+            printScreen("Name failed!");
+            return
+          }
+          password = profile.getId();
+          firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+            if (dataS.val() == undefined || dataS.val() == null) {
+              let pl = new newPlayer(myName, password);
+              firebase.database().ref("users/" + myName).set(pl, () => {
+                printScreen("signUp was ok");
+                location.reload();
+              });
+            } else {
+              if (!myName) {
+                myName = prompt("Account name?");
+                myName = myName.split(" ")[0];
               }
-            }
-            if (!myName) {
-              myName = prompt("Account name?");
-            }
-            myName = myName.split(" ")[0];
-            if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName ==
-              "" || myName == " ") {
-              printScreen("Name failed!");
-              return
-            }
-            password = profile.getId();
-            firebase.database().ref("users/" + myName).once("value").then((dataS) => {
-              if (dataS.val() == undefined || dataS.val() == null) {
-                let pl = new newPlayer(myName, password);
-                firebase.database().ref("users/" + myName).set(pl, () => {
-                  printScreen("signUp was ok");
-                  location.reload();
-                });
-              } else {
-                if (!myName) {
-                  myName = prompt("Account name?");
-                  myName = myName.split(" ")[0];
-                }
-                firebase.database().ref("users/" + myName).once("value").then((dataS) => {
-                  if (dataS.val().password == password) {
-                    player = new Player(dataS.val());
-                    //if signed up
-                    //alert("Open your console with F12");
-                    loadWorld();
-                    printScreen("You've been logged as " + myName);
-                  }
-                });
-              }
-            });
-          });
-        }
-      }
+              firebase.database().ref("users/" + myName).once("value").then((dataS) => {
+                if (dataS.val().password == password) {
+                  player = new Player(dataS.val());
+                  //if signed up
+                  //alert("Open your console with F12");
+                  updateTimes("load");
 
-      function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-          location.reload();
+                }
+              });
+            }
+          });
         });
       }
-    </script>
-  </div>
+    }
+
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        location.reload();
+      });
+    }
+  </script>
   <div id="buttons">
-    <div class="g-signin2" data-onsuccess="onSignIn"> </div>
+    <div class="g-signin2" style='padding-left: 0' data-onsuccess="onSignIn"> </div>
   </div>
   <span id="selector"> </span>
   <div style="margin-top:2%">
     <span id="shopSel"> </span>
   </div>
   <div id="screen">
-
+  </div>
+  <div id="textBox" style='height:350px;width:400px; overflow:auto;'>
   </div>
   <style>
     body {
-      background-image: url("village.jpg");
+      background-image: url("blank.jpg");
       background-size: cover;
     }
 
@@ -121,11 +115,16 @@
       padding: 0%;
     }
 
-    .cent {
-      position: absolute;
+    ul {
+      list-style-type: none;
     }
 
     .btn-dark {
+      display: block;
+      width: 100px;
+    }
+
+    .btn-success {
       display: block;
       width: 100px;
     }

@@ -212,29 +212,51 @@
     }
   },
   "Npcs" : {
+    "Corpse" : "Corpse",
     "Crystal Wizard" : "Crystal Wizard",
     "Eastern Warrior" : "Eastern Warrior",
+    "Iron Maiden" : "Iron Maiden",
+    "Jester " : "Jester ",
     "King of Illussions" : "King of Illussions",
+    "Knight William" : "Knight William",
     "Lurker" : "Lurker",
     "Minotaurus" : "Minotaurus",
-    "Undead Farmer" : "Undead Farmer"
+    "Rat mutant" : "Rat mutant",
+    "Undead Farmer" : "Undead Farmer",
+    "Vicar " : "Vicar "
   },
   "Quests" : {
     "Burnt Fields" : {
       "description" : "Burnt Fields",
       "name" : "Burnt Fields"
     },
+    "Church of Michael" : {
+      "description" : "Church",
+      "name" : "Church of Michael"
+    },
     "Forest of Shadows" : {
       "description" : "Forest of shadows",
       "name" : "Forest of Shadows"
+    },
+    "Forgotten King's Castle " : {
+      "description" : "Castle",
+      "name" : "Forgotten King's Castle "
     },
     "Frozen Mines" : {
       "description" : "Frozen Mines",
       "name" : "Frozen Mines"
     },
+    "Old Torture Tower" : {
+      "description" : "Tower",
+      "name" : "Old Torture Tower"
+    },
     "Plains of Phantoms" : {
       "description" : "Plains ",
       "name" : "Plains of Phantoms"
+    },
+    "Sewers under Sanctuary" : {
+      "description" : "Sewers",
+      "name" : "Sewers under Sanctuary"
     },
     "The Lake of Leviathan" : {
       "description" : "The lake of Leviathan",
@@ -243,6 +265,14 @@
     "The Mountain of Sunset" : {
       "description" : "Sunset Mountain",
       "name" : "The Mountain of Sunset"
+    },
+    "Tomb " : {
+      "description" : "Tomb",
+      "name" : "Tomb "
+    },
+    "Valley of Idols" : {
+      "description" : "Valley ",
+      "name" : "Valley of Idols"
     }
   },
   "body" : {

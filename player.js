@@ -297,14 +297,15 @@ class Player {
   }
 
   attack(others) { // redo!!
+    let br = "-------------------------------------------------------------";
     let round = 0;
     this.recFight = [];
     let yourHp = this.character.hp;
     let othersHp = others.character.hp;
     console.log(this.name + " attacked " + others.name);
     this.recFight.push(this.name + " attacked " + others.name);
-    console.log("-----------------------------------------------------------------------------------");
-    this.recFight.push("-----------------------------------------------------------------------------------")
+    console.log(br);
+    this.recFight.push(br);
     while (othersHp > 0 && yourHp > 0) {
       round++;
       if (round == 100) {
@@ -323,8 +324,8 @@ class Player {
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           this.recFight.push(this.name + " won!");
-          console.log("-----------------------------------------------------------------------------------");
-          this.recFight.push("-----------------------------------------------------------------------------------");
+          console.log(br);
+          this.recFight.push(br);
           return true
         }
       } else if ((Math.random() * 100) < this.character.luck) { // luck means how many % will he hit
@@ -334,8 +335,8 @@ class Player {
         if (othersHp <= 0) {
           console.log(this.name + " won!");
           this.recFight.push(this.name + " won!");
-          console.log("-----------------------------------------------------------------------------------");
-          this.recFight.push("-----------------------------------------------------------------------------------");
+          console.log(br);
+          this.recFight.push(br);
           return true
         }
       } else {
@@ -354,8 +355,8 @@ class Player {
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           this.recFight.push(others.name + " won!");
-          console.log("-----------------------------------------------------------------------------------");
-          this.recFight.push("-----------------------------------------------------------------------------------");
+          console.log(br);
+          this.recFight.push(br);
           return false
         }
       } else if ((Math.random() * 100) < others.character.luck) {
@@ -365,8 +366,8 @@ class Player {
         if (yourHp <= 0) {
           console.log(others.name + " won!");
           this.recFight.push(others.name + " won!");
-          console.log("-----------------------------------------------------------------------------------");
-          this.recFight.push("-----------------------------------------------------------------------------------");
+          console.log(br);
+          this.recFight.push(br);
           return false
         }
       } else {
