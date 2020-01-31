@@ -112,9 +112,13 @@ function showQuests() {
 	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (s) => {
 		let oldTime = s.val();
 		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
+		if (newTime - oldTime > player.onQuest) {
 			if (player.onQuest) {
-				player.doQuest();
+				for (let q in player.questAvailable) {
+					if (player.questAvailable[q].sel) {
+						player.doQuest(player.questAvailable[q]);
+					}
+				}
 				blank();
 				changeBackground("blank.jpg");
 				addBackButton();
@@ -123,19 +127,33 @@ function showQuests() {
 				blank();
 				changeBackground("blank.jpg");
 				addBackButton();
-				let quests = randomQuests(3);
+				let quests;
+				if (player.questAvailable.length != 3) {
+					quests = randomQuests(3);
+					player.questAvailable = quests;
+					player.saveState();
+				} else {
+					quests = player.questAvailable;
+				}
 				let selected = 0;
-				$("#screen").append($("<center><div class='container'><div id='questDiv'class='row'><div class='col-lg-8'> <ul id='questSelector' class='selectpicker' data-style='btn-dark'> </ul> </div></div></div></center>"));
+				$("#screen").append($("<center><div class='container'><div id='questDiv' class='row'><div class='col-lg-8'> <ul id='questSelector' class='selectpicker' data-style='btn-dark'> </ul> </div></div></div></center>"));
 				$("#questDiv").append($("<div class='col-lg-4' id='questDescription'><p id='des'>" + quests[selected].description + "</p></div>"))
+				$("#questDiv").append($("<div class='col-lg-4' id='questXpDiv'><p id='xpRew'>" + quests[selected].xpReward + " xp </p></div>"));
+				$("#questDiv").append($("<div class='col-lg-4' id='questTimeDiv'><p id='questTime'>" + quests[selected].time / 60000 + " min </p></div>"));
+				$("#questDiv").append($("<div class='col-lg-4' id='questGoldRewDiv'><p id='goldRew'>" + quests[selected].goldReward + " gold </p></div>"))
 				for (let i = 0; i < quests.length; i++) {
 					$("#questSelector").append($("<li>" + quests[i].name + "</li>").click(() => {
 						selected = i;
 						$("#des").html(quests[selected].description);
+						$("#xpRew").html(quests[selected].xpReward + " xp");
+						$("#goldRew").html(quests[selected].goldReward + " gold");
+						$("#questTime").html(quests[selected].time / 60000 + " min");
 					}));
 				}
 				$("#questDescription").append($("<div class='row'><div class='col-lg-12'><button class='btn btn-dark'>GO</button></div></div>").click(() => {
-					player.onQuest = true;
+					player.onQuest = quests[selected].time;
 					firebase.database().ref("users/" + player.name + "/times/quest").set(Date.parse(new Date()));
+					player.questAvailable[selected].sel = true;
 					player.saveState();
 					showQuests();
 				}));
@@ -145,10 +163,10 @@ function showQuests() {
 			addBackButton();
 			changeBackground("blank.jpg");
 			$("#screen").append(progressBarCode);
-			let time = (600000 - (newTime - oldTime)) / 1000
+			let time = (player.onQuest - (newTime - oldTime)) / 1000
 			let min = Math.floor(time / 60);
 			let sec = Math.floor(time - min * 60);
-			let remaining = 100 - (time / 600) * 100;
+			let remaining = 100 - (time / (player.onQuest / 1000)) * 100;
 			$("#pb").css("width", remaining + "%");
 			$("#pb").html(min + " : " + sec);
 			loadingTimeout = setTimeout(showQuests, 1000);
@@ -260,6 +278,11 @@ function randomQuests(num) {
 		returnList.push(quests[index]);
 		quests.splice(index, 1);
 	}
+	for (let j = 0; j < returnList.length; j++) {
+		returnList[j].goldReward = 1 + Math.floor(Math.random() * player.lvl * 12);
+		returnList[j].xpReward = Math.floor(1 + Math.random() * player.lvl * 7);
+		returnList[j].time = (returnList[j].goldReward + returnList[j].xpReward) * 60000;
+	}
 	return returnList;
 }
 
@@ -280,11 +303,11 @@ function updateTimes(str) {
 		let serverTimes = data.val();
 		let oldTime = serverTimes.monsters;
 		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > 600000) {
+		if (newTime - oldTime > 600000 * 6) {
 			times.monsterM = 0;
 			times.monsterS = 0;
 		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000;
+			let time = (600000 * 6 - (newTime - oldTime)) / 1000;
 			times.monsterM = Math.floor(time / 60);
 			times.monsterS = Math.floor(time - times.monsterM * 60);
 		}
@@ -309,12 +332,12 @@ function updateTimes(str) {
 			times.arenaS = Math.floor(time - times.arenaM * 60);
 		}
 		oldTime = serverTimes.quest;
-		if (newTime - oldTime > 600000) {
+		if (newTime - oldTime > player.onQuest) {
 			times.questS = 0;
 			times.questM = 0;
 
 		} else {
-			let time = (600000 - (newTime - oldTime)) / 1000
+			let time = (player.onQuest - (newTime - oldTime)) / 1000
 			times.questM = Math.floor(time / 60);
 			times.questS = Math.floor(time - times.questM * 60);
 		}

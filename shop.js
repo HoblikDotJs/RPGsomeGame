@@ -2,14 +2,14 @@ function redirectToShop() {
   blank();
   changeBackground("blank.jpg");
   addBackButton();
+  reloadShopBtn();
   makeShopSelect();
   buyButton();
-  reloadShopBtn();
-  if (!player.shopItems) {
-    screenButtons.reloadShopBtn.trigger("click");
+  if (player.shopItems == undefined) {
+    console.log("empty thingy")
+    showShop();
   }
 }
-
 
 function showShop() {
   player.showShop();
@@ -39,6 +39,7 @@ function reloadShopBtn() {
   screenButtons.reloadShopBtn.mouseout(showShopTitle)
   screenButtons.reloadShopBtn.click(() => {
     showShop();
+    refreshShopSelect();
   });
 }
 

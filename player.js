@@ -19,6 +19,7 @@ class newPlayer {
     this.gold = parseInt(0);
     this.fame = parseInt(0);
     this.messages = [];
+    this.questAvailable = [];
     this.character = baseCharacter;
     this.shopItems = [];
     this.upgradeCharacter = {
@@ -49,7 +50,7 @@ class newPlayer {
 }
 class Player {
   constructor(obj) {
-    this.onQuest = obj.onQuest || false;
+    this.onQuest = obj.onQuest || 0;
     this.upgradeCharacter = obj.upgradeCharacter;
     this.character = baseCharacter;
     this.gold = obj.gold;
@@ -65,6 +66,7 @@ class Player {
     this.shopItems = obj.shopItems;
     this.times = obj.times;
     this.recFight = [];
+    this.questAvailable = obj.questAvailable || [];
     this.readMessages();
     this.calculateCharacter();
   }
@@ -115,6 +117,7 @@ class Player {
         this.updateShopItems();
         this.times.shop = Date.parse(new Date());
         firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
+        refreshShopSelect();
       } else {
         if (times.shopS && times.shopM) {
           printScreen("You need to wait " + times.shopM + ":" + times.shopS + " for new items");
@@ -164,15 +167,16 @@ class Player {
 
   //-------------------------------------------------------------------------------------
   //                                        QUESTS
-  doQuest() {
+  doQuest(quest) {
     let NPC = this.makeNpc();
     if (this.attack(NPC)) {
-      this.xp += this.lvl * 5;
-      this.gold += this.lvl * 10;
+      this.xp += quest.xpReward;
+      this.gold += quest.goldReward;
     } else {
       this.xp += this.lvl;
     }
-    this.onQuest = false;
+    this.questAvailable = randomQuests(3);
+    this.onQuest = 0;
     this.saveState();
   }
 
@@ -190,6 +194,7 @@ class Player {
   //-------------------------------------------------------------------------------------
   saveState() {
     this.lvlUp();
+    firebase.database().ref("users/" + this.name + "/questAvailable").set(this.questAvailable);
     firebase.database().ref("users/" + this.name + "/onQuest").set(this.onQuest);
     firebase.database().ref("users/" + this.name + "/upgradeCharacter").set(this.upgradeCharacter);
     firebase.database().ref("users/" + this.name + "/gold").set(parseInt(this.gold));
@@ -268,7 +273,7 @@ class Player {
     firebase.database().ref("users/" + this.name + "/times/monsters").on("value", (data) => {
       let oldDate = data.val();
       let thisDate = Date.parse(new Date());
-      if (thisDate - oldDate > 600000) {
+      if (thisDate - oldDate > 600000 * 6) {
         if (this.bossLvl >= enemies.length) {
           printScreen("No enemies left");
         } else {
