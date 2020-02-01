@@ -11,7 +11,7 @@ function showQuestTitle() {
 }
 
 function showShopTitle() {
-  screenButtons.reloadShopBtn.html("🔄");
+  $("#reloadShop").html("Reload");
 }
 
 function showMonsterTime() {
@@ -24,9 +24,9 @@ function showMonsterTime() {
 
 function showShopTime() {
   if (times.shopM == 0 && times.shopS == 0) {
-    screenButtons.reloadShopBtn.html("Ready!");
+    $("#reloadShop").html("Ready!");
   } else {
-    screenButtons.reloadShopBtn.html(times.shopM + " : " + times.shopS);
+    $("#reloadShop").html(times.shopM + " : " + times.shopS);
   }
 }
 

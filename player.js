@@ -117,16 +117,12 @@ class Player {
         this.updateShopItems();
         this.times.shop = Date.parse(new Date());
         firebase.database().ref("users/" + this.name + "/times/shop").set(this.times.shop);
-        refreshShopSelect();
-      } else {
-        if (times.shopS && times.shopM) {
-          printScreen("You need to wait " + times.shopM + ":" + times.shopS + " for new items");
+        if (selected == 0) {
+          selected = 1;
         } else {
-          printScreen("You need to wait");
+          selected = 0;
         }
-        console.log(this.shopItems);
-        refreshSelect();
-        refreshShopSelect();
+        changeSelItem();
       }
     });
   }
@@ -136,15 +132,17 @@ class Player {
 
   buyFromShop(index) {
     let item = this.shopItems[index];
-    if (parseInt(this.gold) >= parseInt(item.price)) {
-      this.gold -= parseInt(item.price);
-      this.backpack.push(item);
-      this.shopItems.splice(index, 1);
-      this.updateShopItems();
-      this.saveState();
+    if (item.sold == true) {
+      // idk
     } else {
-      let needGold = parseInt(item.price) - parseInt(this.gold);
-      printScreen("You will need " + needGold + " more gold");
+      if (parseInt(this.gold) >= parseInt(item.price)) {
+        this.gold -= parseInt(item.price);
+        this.backpack.push(item);
+        this.shopItems[index].sold = true;
+        this.updateShopItems();
+        this.saveState();
+        changeSelItem();
+      }
     }
   }
 
@@ -215,11 +213,12 @@ class Player {
       this.backpack.splice(this.backpack.indexOf(object), 1);
       this.backpack.push(prevItem);
       this.calculateCharacter();
-      printScreen("You just putted " + object.name + " on.");
+      // printScreen("You just putted " + object.name + " on.");
       console.log(this.character);
       console.log(this.slots);
+      this.saveState();
     } else {
-      printScreen("You must have the item in backpack.");
+      // printScreen("You must have the item in backpack.");
       console.log(this.backpack);
     }
   }

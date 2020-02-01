@@ -74,6 +74,10 @@
               firebase.database().ref("users/" + myName).once("value").then((dataS) => {
                 if (dataS.val().password == password) {
                   player = new Player(dataS.val());
+                  if (player.shopItems == undefined) {
+                    console.log("empty thingy")
+                    showShop();
+                  }
                   //if signed up
                   //alert("Open your console with F12");
                   updateTimes("load");
@@ -121,19 +125,13 @@
 
     .btn-dark {
       display: block;
+      background-color: #575757;
       width: 100px;
     }
 
     .btn-success {
       display: block;
       width: 100px;
-    }
-
-    .sel {
-      display: inline;
-      border-radius: 10px;
-      width: 120px;
-      height: 2em;
     }
   </style>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

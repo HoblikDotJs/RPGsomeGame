@@ -16,16 +16,13 @@ let times = {
 	questS: undefined,
 }
 let screenButtons = {
-	showShopBtn: undefined,
-	reloadShopBtn: undefined,
-	putOnBtn: undefined,
+	signout: undefined,
 	arenaBtn: undefined,
-	playerBtn: undefined,
 	monsterBtn: undefined,
+	playerBtn: undefined,
+	putOnBtn: undefined,
 	fameBtn: undefined,
 	questBtn: undefined,
-	buyBtn: undefined,
-	signout: undefined,
 }
 
 //--------------------------------------------------------------------------------------------
@@ -112,7 +109,7 @@ function showQuests() {
 	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (s) => {
 		let oldTime = s.val();
 		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > player.onQuest) {
+		if (newTime - oldTime > player.onQuest) { // player finished the quest
 			if (player.onQuest) {
 				for (let q in player.questAvailable) {
 					if (player.questAvailable[q].sel) {
@@ -123,7 +120,7 @@ function showQuests() {
 				changeBackground("blank.jpg");
 				addBackButton();
 				playFight(false);
-			} else {
+			} else { // selecting quest
 				blank();
 				changeBackground("blank.jpg");
 				addBackButton();
@@ -158,17 +155,18 @@ function showQuests() {
 					showQuests();
 				}));
 			}
-		} else {
+		} else { // player is in quest
 			blank();
 			addBackButton();
 			changeBackground("blank.jpg");
+			$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
 			$("#screen").append(progressBarCode);
 			let time = (player.onQuest - (newTime - oldTime)) / 1000
 			let min = Math.floor(time / 60);
 			let sec = Math.floor(time - min * 60);
 			let remaining = 100 - (time / (player.onQuest / 1000)) * 100;
 			$("#pb").css("width", remaining + "%");
-			$("#pb").html(min + " : " + sec);
+			$("#pbTime").html(min + " : " + sec);
 			loadingTimeout = setTimeout(showQuests, 1000);
 		}
 	});
@@ -236,7 +234,6 @@ function blank() { // deletes all el.
 	emptyScreen();
 }
 
-
 function playFight(bool) {
 	let del = bool || false;
 	if (player.recFight.length != 0) {
@@ -291,13 +288,13 @@ function changeBackground(str) {
 }
 
 
-let progressBarCode = '<div class="progress" style="width:400px"> <div class="progress-bar bg-dark" id="pb" style="width:0% aria-valuemin ="0"aria-valuemax="100""></div> </div>'
+let progressBarCode = '<div class="progress" style="width:80%; height:30px; margin: auto;"> <div class="progress-bar bg-dark" id="pb" style="width:0% aria-valuemin ="0"aria-valuemax="100""></div> </div>'
 
 function updateTimes(str) {
 	firebase.database().ref("users/" + player.name + "/times").once("value", (data) => {
 		if (str === "load") { // just for loading into the game 
 			loadWorld();
-			printScreen("You've been logged as " + myName);
+			//	printScreen("You've been logged as " + myName);
 			setInterval(updateTimes, 1000);
 		}
 		let serverTimes = data.val();
@@ -351,4 +348,50 @@ function updateTimes(str) {
 		}
 
 	});
+}
+
+function con(str) {
+	let string;
+	switch (str) {
+		case "armor":
+			string = "Armor";
+			break;
+		case "hp":
+			string = "HP";
+			break;
+		case "damage":
+			string = "Damage";
+			break;
+		case "luck":
+			string = "Luck";
+			break;
+		case "magicResistance":
+			string = "Magic Resistance";
+			break;
+		case "regen":
+			string = "Regeneration";
+			break;
+		case "weight":
+			string = "Weight";
+			break;
+		case "rightArm":
+			string = "Right Arm";
+			break;
+		case "leftArm":
+			string = "Left Arm";
+			break;
+		case "ring":
+			string = "Ring";
+			break;
+		case "head":
+			string = "Head";
+			break;
+		case "body":
+			string = "Body";
+			break;
+		case "neck":
+			string = "Neck";
+			break;
+	}
+	return string;
 }

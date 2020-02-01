@@ -1,37 +1,77 @@
+let invSelected;
+
 function showPlayer() {
   blank();
   addBackButton();
   changeBackground("blank.jpg");
-  console.log(player.character);
-  console.log("You have " + player.gold + " gold");
-  console.log("You are lvl " + player.lvl);
-  console.log("You have " + player.xp + " xp");
-  console.log("You have " + player.fame + " fame");
-  console.log(player.slots);
-  makeSelect();
+  invSelected = 0;
+  /* console.log(player.character);
+   console.log("You have " + player.gold + " gold");
+   console.log("You are lvl " + player.lvl);
+   console.log("You have " + player.xp + " xp");
+   console.log("You have " + player.fame + " fame");
+   console.log(player.slots);*/
+  let parent = $("<div class='container' style='margin-top:200px;'>   <div class='row' id='invent'>   </div>   <div id='invBtns' style='margin-top: 510px;'class='row'> </div>    </div>");
+  $("#screen").append(parent);
+  $("#invent").append($("<div class='col-lg-6' id='stats' style='position: absolute; border:solid black; height: 500px; width: 500px; '> </div>"));
+  $("#invent").append($("<div class='col-lg-6' id='me' style='position: absolute; border:solid grey; height: 500px; width: 500px; margin-left: 550px;'> </div>"));
+  changeInvItem();
+  backwardIBtn();
   putOnButton();
+  forwardIBtn();
+  showCharacter();
 }
 
-function makeSelect() {
-  select = $("<select class='btn btn-dark' >").appendTo("#selector");
-  refreshSelect();
+function showCharacter() {
+  let parent = $("#me");
+  parent.empty();
+  parent.append($("<center><b><p style='height:55px; font-size: 25px;'>" + player.name + "</p></b></center>"));
+  parent.append($("<center><p style='height:50px; font-size: 20px'>" + "Lvl : " + player.lvl + "</p></center>"));
+  parent.append($("<center><p style='height:50px; font-size: 20px;'>" + "Gold : " + player.gold + " gold </p></center>"));
+  for (let property in player.character) {
+    parent.append($('<center><p style="height:50px; font-size: 20px " >' + con(property) + " : " + player.character[property] + '</p></center>'));
+  }
+}
+
+function changeInvItem() {
+  let parent = $("#stats");
+  parent.empty();
+  parent.append($("<center><b><p style='height:55px; font-size: 25px;'>" + player.backpack[invSelected].name + "</p></b></center>"));
+  parent.append($("<center><p style='height:50px; font-size: 20px'>" + "Slot : " + con(player.backpack[invSelected].slot) + "</p></center>"));
+  parent.append($("<center><p style='height:50px; font-size: 20px;'>" + "Price : " + player.backpack[invSelected].price + " gold </p></center>"));
+
+  for (let property in player.backpack[invSelected].properties) {
+    parent.append($('<center><p style="height:50px; font-size: 20px " >' + con(property) + " : " + player.backpack[invSelected].properties[property] + '</p></center>'));
+
+  }
+}
+
+
+function forwardIBtn() {
+  $("#invent").append($("<button class='btn btn-dark' style='margin-left:100px; margin-top:510px'> -> </button>").click(() => {
+    invSelected++;
+    if (invSelected > player.backpack.length - 1) {
+      invSelected = 0;
+    }
+    changeInvItem();
+  }));
+}
+
+function backwardIBtn() {
+  $("#invent").append($("<button class='btn btn-dark' style='margin-top:510px'> <- </button>").click(() => {
+    invSelected--;
+    if (invSelected < 0) {
+      invSelected = player.backpack.length - 1;
+    }
+    changeInvItem();
+  }));
 }
 
 function putOnButton() {
-  screenButtons.putOnBtn = $("<button class='btn btn-dark'> style='display: inline;'").appendTo("#selector");
-  screenButtons.putOnBtn.html("Put on");
+  screenButtons.putOnBtn = $("<button class='btn btn-dark' style='margin-top:510px; margin-left:100px;'>Equip</button>").appendTo("#invent");
   screenButtons.putOnBtn.click(() => {
-    let index = select.val();
-    player.putOn(player.backpack[index]);
-    refreshSelect();
+    player.putOn(player.backpack[invSelected]);
+    changeInvItem();
+    showCharacter();
   })
-}
-
-function refreshSelect() {
-  select.empty();
-  for (let i = 0; i < player.backpack.length; i++) {
-    let itemName = player.backpack[i].name;
-    let part = player.backpack[i].slot;
-    select.append($("<option class='btn-dark'>").html(itemName + " (" + part + ")").val(i));
-  }
 }
