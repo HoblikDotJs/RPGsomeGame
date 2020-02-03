@@ -177,7 +177,6 @@ function arenaFight() {
 	changeBackground("blank.jpg");
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
-		playFight();
 	} else {
 		addBackButton();
 		if (times.arenaM && times.arenaS) {
@@ -286,7 +285,6 @@ function randomQuests(num) {
 function changeBackground(str) {
 	$("body").css("background-image", `url(${str})`);
 }
-
 
 let progressBarCode = '<div class="progress" style="width:80%; height:30px; margin: auto;"> <div class="progress-bar bg-dark" id="pb" style="width:0% aria-valuemin ="0"aria-valuemax="100""></div> </div>'
 
