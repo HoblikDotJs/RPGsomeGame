@@ -177,13 +177,17 @@ function arenaFight() {
 	changeBackground("blank.jpg");
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
+		playFight();
 	} else {
 		addBackButton();
-		if (times.arenaM && times.arenaS) {
-			printScreen("You must wait " + times.arenaM + ":" + times.arenaS);
-		} else {
-			printScreen("You must wait");
-		}
+		$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
+		$("#screen").append(progressBarCode);
+		let sec = times.arenaS;
+		let min = times.arenaM;
+		let remaining = (1 - ((min * 60 + sec) / 600)) * 100;
+		$("#pb").css("width", remaining + "%");
+		$("#pbTime").html(min + " : " + sec);
+		loadingTimeout = setTimeout(arenaFight, 1000);
 	}
 }
 
@@ -195,11 +199,14 @@ function fightMonsters() {
 		playFight();
 	} else {
 		addBackButton();
-		if (times.monsterM && times.monsterS) {
-			printScreen("You need to wait " + times.monsterM + ":" + times.monsterS);
-		} else {
-			printScreen("You need to wait");
-		}
+		$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
+		$("#screen").append(progressBarCode);
+		let sec = times.monsterS;
+		let min = times.monsterM;
+		let remaining = (1 - ((min * 60 + sec) / 3600)) * 100;
+		$("#pb").css("width", remaining + "%");
+		$("#pbTime").html(min + " : " + sec);
+		loadingTimeout = setTimeout(fightMonsters, 1000);
 	}
 }
 
@@ -285,8 +292,6 @@ function randomQuests(num) {
 function changeBackground(str) {
 	$("body").css("background-image", `url(${str})`);
 }
-
-let progressBarCode = '<div class="progress" style="width:80%; height:30px; margin: auto;"> <div class="progress-bar bg-dark" id="pb" style="width:0% aria-valuemin ="0"aria-valuemax="100""></div> </div>'
 
 function updateTimes(str) {
 	firebase.database().ref("users/" + player.name + "/times").once("value", (data) => {

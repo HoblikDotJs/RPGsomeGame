@@ -375,7 +375,7 @@ class Player {
           return false
         }
       } else {
-        console.log(others.name + " missed");
+        console.log(others.name + " missed"); //
         this.recFight.push(others.name + " missed");
       }
     }
