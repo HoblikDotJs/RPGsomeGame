@@ -258,7 +258,7 @@ class Player {
             firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
               return fame += 1;
             });
-            firebase.database().ref("users/" + enemy.name + "/messages").push("You won battle with " + this.name);
+            firebase.database().ref("users/" + enemy.name + "/messages/" + this.name).set("You won battle with " + this.recFight);
           }
         });
         this.times.arena = Date.parse(new Date());
