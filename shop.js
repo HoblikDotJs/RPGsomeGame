@@ -8,7 +8,7 @@ function redirectToShop() {
   let parent = $("<div class='container' style='margin-top:200px;'>   <div class='row' id='shopItem'>   </div>   <div id='shopBtns' style='margin-top: 510px;'class='row'> </div>    </div>");
   $("#screen").append(parent);
   $("#shopItem").append($("<div class='col-lg-6' id='itemStats' style='position: absolute; border:solid black; height: 500px; width: 500px; '> </div>"));
-  $("#shopItem").append($("<div class='col-lg-6' id='itemImg' style='position: absolute; border:solid grey; height: 500px; width: 500px; margin-left: 550px;'> </div>"));
+  $("#shopItem").append($("<div class='col-lg-6' id='itemImg' style='position: absolute; border:solid grey; height: 500px; width: 500px; margin-left: 635px;'> </div>"));
   changeSelItem();
   backwardSBtn();
   reloadShopBtn();
@@ -61,9 +61,8 @@ function showShop() {
   player.showShop();
 }
 
-
 function buyButton() {
-  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:50px'>Buy</button>").appendTo("#shopBtns").click(() => {
+  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:135px'>Buy</button>").appendTo("#shopBtns").click(() => {
     player.buyFromShop(selected);
   }));
 }

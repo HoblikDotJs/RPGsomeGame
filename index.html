@@ -53,8 +53,16 @@
           }
           if (!myName) {
             myName = prompt("Account name?");
+            myName = myName.split(" ")[0];
+            for (let user in users) {
+              if (users[user].name == myName) {
+                printScreen("Name was already taken");
+                return
+              }
+            }
+          } else {
+            myName = myName.split(" ")[0]; // xss
           }
-          myName = myName.split(" ")[0];
           if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName ==
             "" || myName == " ") {
             printScreen("Name failed!");

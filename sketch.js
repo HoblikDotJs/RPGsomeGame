@@ -118,7 +118,6 @@ function showQuests() {
 				}
 				blank();
 				changeBackground("blank.jpg");
-				addBackButton();
 				playFight(false);
 			} else { // selecting quest
 				blank();
