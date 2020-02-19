@@ -44,7 +44,7 @@ function changeInvItem() {
 
 
 function forwardIBtn() {
-  $("#invent").append($("<button class='btn btn-dark' style='margin-left:100px; margin-top:510px'> -> </button>").click(() => {
+  $("#invent").append($("<button class='btn btn-dark' style='margin-left:80px; margin-top:510px'> -> </button>").click(() => {
     invSelected++;
     if (invSelected > player.backpack.length - 1) {
       invSelected = 0;
@@ -64,7 +64,7 @@ function backwardIBtn() {
 }
 
 function putOnButton() {
-  screenButtons.putOnBtn = $("<button class='btn btn-dark' style='margin-top:510px; margin-left:100px;'>Equip</button>").appendTo("#invent");
+  screenButtons.putOnBtn = $("<button class='btn btn-dark' style='margin-top:510px; margin-left:90px;'>Equip</button>").appendTo("#invent");
   screenButtons.putOnBtn.click(() => {
     player.putOn(player.backpack[invSelected]);
     changeInvItem();
