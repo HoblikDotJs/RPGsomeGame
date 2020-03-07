@@ -38,10 +38,11 @@ function setup() {
 //-----------------------------------------------------------------------------------------
 function loadWorld() {
 	clearTimeout(loadingTimeout);
-	changeBackground("village.jpg")
+	changeBackground("images/village.jpg")
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
+	$("#textBox").css('height', '350px');
 	blank();
 	player.playFight = [];
 	let parent = $("#buttons");
@@ -49,7 +50,7 @@ function loadWorld() {
 	screenButtons.arenaBtn = $("<button class='btn btn-dark' id='arenaButt'>Arena</button>").click(arenaFight);
 	screenButtons.monsterBtn = $("<button class='btn btn-dark' id='monstersButt'>Monsters</button>").click(fightMonsters);
 	screenButtons.playerBtn = $("<button class='btn btn-dark' id='playerButt'>Player</button>").click(showPlayer);
-	screenButtons.fameBtn = $("<button class='btn btn-dark' id='fameButt'>Hall Of Fame</button>").click(showBestPlayers);
+	screenButtons.fameBtn = $("<button class='btn btn-dark' id='fameButt'>Fame</button>").click(showBestPlayers);
 	screenButtons.questBtn = $("<button class='btn btn-dark' id='questButt'>Quests</button>").click(showQuests);
 	screenButtons.showShopBtn = $("<button class='btn btn-dark' id='showShopButt'>Shop</button>").click(redirectToShop);
 	screenButtons.arenaBtn.mouseover(showArenaTime);
@@ -73,7 +74,7 @@ function showBestPlayers() {
 	console.log("Currently unavailable :(");
 	blank();
 	addBackButton();
-	changeBackground("blank.jpg");
+	changeBackground("images/blank.jpg");
 	/*
 	let bestPlayers = [];
 	firebase.database().ref("users").on("value", function (snapshot) {
@@ -117,11 +118,11 @@ function showQuests() {
 					}
 				}
 				blank();
-				changeBackground("blank.jpg");
+				changeBackground("images/blank.jpg");
 				playFight(false);
 			} else { // selecting quest
 				blank();
-				changeBackground("blank.jpg");
+				changeBackground("images/blank.jpg");
 				addBackButton();
 				let quests;
 				if (player.questAvailable.length != 3) {
@@ -157,7 +158,7 @@ function showQuests() {
 		} else { // player is in quest
 			blank();
 			addBackButton();
-			changeBackground("blank.jpg");
+			changeBackground("images/blank.jpg");
 			$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
 			$("#screen").append(progressBarCode);
 			let time = (player.onQuest - (newTime - oldTime)) / 1000
@@ -192,7 +193,7 @@ function arenaFight() {
 
 function fightMonsters() {
 	blank();
-	changeBackground("blank.jpg");
+	changeBackground("images/blank.jpg");
 	if ((times.monsterM == undefined && times.monsterS == undefined) || (times.monsterM == 0 && times.monsterS == 0)) {
 		player.fightNext();
 		playFight();

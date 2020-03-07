@@ -226,52 +226,60 @@
     "Vicar " : "Vicar "
   },
   "Quests" : {
+    "Alastor's Grave" : {
+      "description" : "The grave of the famous warrior Alastor is marked by a gigantic axe, Alastor's weapon of choice. Alastor was originally a strong human warrior who enjoyed fighting more than anything else. He won each battle. He murdered thousands of people. After some time he lost all of his humanity and turned into something simillar to a demon. After this he fought demons and even angels. Nobody knows how he died but everyone is glad that he is gone. He was more terrifying than some demons.  All kinds of demons visit his grave. They think Alastor's power is sealed in his axe. They want to steal it. So maybe don't let that happen.",
+      "name" : "Alastor's Grave"
+    },
     "Burnt Fields" : {
-      "description" : "Burnt Fields",
+      "description" : "It is said that long ago an army withdrew from battle and on their way home they burnt down these fields. People had nothing to eat because of this, so they left this land.  Dust and ash is everywhere because small fires still burn on the fields to this day. Perfect place for monsters, wouldn't you say?",
       "name" : "Burnt Fields"
     },
     "Church of Michael" : {
-      "description" : "Church",
+      "description" : "This huge and expensive church was built to worship one of the Seven Heavenly Virtues - Michael. Michael is the virtue of Charity, so mostly only the poor gathered in this church to pray. The church was small and plain at first, but as wars, famines and plagues decimated the land, more people began visiting the church. Michael became the most worhiped angel. The church grew in size, more decorations were added and two huge statues of Michael were made to attract more even people. Perhaps, after this reconstruction, people only visited this place to feel wealthy and to be surrounded by luxurious objects. Now, after the Armageddon, nobody visits this pompous church anymore.  Still, I think you should check it out. That place gives me the creeps for some reason.",
       "name" : "Church of Michael"
     },
     "Forest of Shadows" : {
-      "description" : "Forest of shadows",
+      "description" : "The Forest of Shadows was used to hang witches. Tthere are ropes hanging from the trees and many graves everywhere. There used to be an isolated village near this forest. Apparently the villagers were obssesed with witch hunting and hated strangers. They even found witches among the villagers. In a few months they hung every woman in the village and most men.  People say the ropes on the trees are alive and there are ghost lurking in the forest. It is just an old story but you should check it.",
       "name" : "Forest of Shadows"
     },
-    "Forgotten King's Castle " : {
-      "description" : "Castle",
-      "name" : "Forgotten King's Castle "
+    "Forgotten King's Castle" : {
+      "description" : "Once upon a time this land used to be a kingdom that was ruled by a king. Well, now we have only a few towns surrounded by walls, so nobody remembers that, but everbody knows about the king's castle. It is huge, stands on a hill and you can see it from far away. The town under it is completely destroyed but the castle is untouched. The Old King must have really loved himself. This castle is as huge as his ego. Well, now The Sin of Pride himself lives there. I think this castle suits him perfectly. Look around the castle, you might find something.",
+      "name" : "Forgotten King's Castle"
     },
     "Frozen Mines" : {
-      "description" : "Frozen Mines",
+      "description" : "Located in the mountains, these mines are hard to reach because of the terrible cold and wind. The miners found rare red stones here. These stones were beautiful, they looked like pure frozen blood. Everyone was charmed by them. The miners worked day and night to find as many stones as possible. Not only to sell them for a lot of money, but also to bring them home. Most of the miners froze to death or died of exhaustion. And the few that returned carried bags full of blood. You could try to find some of these red stones but bringing them to Sanctuary is impossible. So just look for some powerful monsters there. At least I think that's what you're good at.",
       "name" : "Frozen Mines"
     },
     "Old Torture Tower" : {
-      "description" : "Tower",
+      "description" : "There isn't anything special about this place, just a creepy old torture tower. It is tall, ruined and I have to listen to the terrible screams that come from there each night. Would you kindly silence those screams?",
       "name" : "Old Torture Tower"
     },
+    "Ossuary" : {
+      "description" : "Why the hell would anyone build something like this? What's the point? We have graves, tombs and other things but someone had the brilliant idea to decorate a church with bones.  The bones belong to the priests of this church. They let other priests decorate the church with their bones after they die. I think it's a twisted way to become immortal.",
+      "name" : "Ossuary"
+    },
     "Plains of Phantoms" : {
-      "description" : "Plains ",
+      "description" : "The Old King reaaaally liked animals. Well, he didn't have any pets or anything like that, he just used animal motives everywhere. He, himself, wore a lion shaped helmet. He also had an elite group of knights called The Ravens. He really was an animal fan.  There are many stories about The Ravens but everyone remembers their end the most. The demons appeared and destroyed almost everything except the capital city and King's Castle. The Ravens fought the demons on the plains near the capital. The battle was quite quick, the Ravens were completely wiped out. However, they were the only ones that opposed the demons. The plains are now called the Plains of Phantoms. The undead Ravens still roam the plains and kill everything that comes close.",
       "name" : "Plains of Phantoms"
     },
     "Sewers under Sanctuary" : {
-      "description" : "Sewers",
+      "description" : "What can I say about the sewers? It smells like .... ehm there, it is disgusting and Belzebub lives there since last Tuesday. So the smell is even worse now! And the cherry on top of this rotten cake is our town, Sanctuary. We literally live above a demon's house. WHY?!",
       "name" : "Sewers under Sanctuary"
     },
     "The Lake of Leviathan" : {
-      "description" : "The lake of Leviathan",
+      "description" : "Leviathan, the Sin of Envy, The three - headed snake. Since he is the sin of envy, he envies everyone, especially his fellow Deadly Sins. He tries to copy them. His heads can even shapeshift!  Leviathan likes water, so, naturally, he made one of the largest lakes his home. Now he lives there with his terrifying children. They look like fish, snakes and people combined. And of course, the lake attracts all kinds of demons now. Maybe you should join this demon party.",
       "name" : "The Lake of Leviathan"
     },
     "The Mountain of Sunset" : {
-      "description" : "Sunset Mountain",
+      "description" : "There is a statue of a woman on the top of this beautiful mountain. The statue is looking directly to the west. There is a legend about this place: A woman visited The Mountain of Sunsets each day to pray and to watch sunsets. However, one day she didn't pray because she only wanted to watch the sunset. Suddenly, angels descended from heaven and turned her to stone for her laziness. Moral of the story? Pray, I guess. But you're a demon hunter so I think you are welcome in heaven even without praying.",
       "name" : "The Mountain of Sunset"
     },
-    "Tomb " : {
-      "description" : "Tomb",
-      "name" : "Tomb "
+    "Tomb" : {
+      "description" : "A tomb for commoners. Not very impressive. The place is humid, mold is everywhere and the coffins look cheap. It was probably built very quickly. The coffins are also chained for some reason. There was once a plague epidemic in this land. Perhaps all plague victims were buried here, even those that were still alive. Paradise for demons, right?",
+      "name" : "Tomb"
     },
     "Valley of Idols" : {
-      "description" : "Valley ",
+      "description" : "Everyone knows about this huge graveyard. Queens of the old kingdom were buried here.  Each queen has her own tomb and statue, they look very expensive. There are so many things in each tomb - jewellry, gold, rare fabric and so on. The statues stand in two rows and look into the valley. Apparently Asmodeus is seen in the valley quite often. Perhaps she wants to have her own statue there? You could make her wish come true.",
       "name" : "Valley of Idols"
     }
   },

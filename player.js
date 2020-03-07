@@ -105,14 +105,20 @@ class Player {
         for (let part in weapons) {
           for (let item in weapons[part]) {
             if (weapons[part][item].name != "Nothing" && part != "Monsters" && part != "Quests" && part != "Npcs") {
-              shoppingWeapons.push(weapons[part][item]);
+              if (!this.backpackContains(weapons[part][item]) && !this.playerContains(weapons[part][item])) {
+                shoppingWeapons.push(weapons[part][item]);
+              }
             }
           }
         }
-        for (let i = 0; i < 3; i++) {
-          let randomIndex = Math.floor(Math.random() * shoppingWeapons.length);
-          this.shopItems.push(shoppingWeapons[randomIndex]);
-          shoppingWeapons.splice(randomIndex, 1);
+        if (shoppingWeapons.length >= 3) {
+          for (let i = 0; i < 3; i++) {
+            let randomIndex = Math.floor(Math.random() * shoppingWeapons.length);
+            this.shopItems.push(shoppingWeapons[randomIndex]);
+            shoppingWeapons.splice(randomIndex, 1);
+          }
+        } else {
+          console.log("You cant buy anything in this moment :)");
         }
         this.updateShopItems();
         this.times.shop = Date.parse(new Date());
@@ -126,6 +132,7 @@ class Player {
       }
     });
   }
+
   updateShopItems() {
     firebase.database().ref("users/" + this.name + "/shopItems").set(this.shopItems);
   }
@@ -217,9 +224,6 @@ class Player {
       console.log(this.character);
       console.log(this.slots);
       this.saveState();
-    } else {
-      // printScreen("You must have the item in backpack.");
-      console.log(this.backpack);
     }
   }
 
@@ -290,7 +294,6 @@ class Player {
             this.gold += parseInt(enemies[this.bossLvl].gold);
             this.xp += this.bossLvl * 10;
             this.bossLvl++;
-            refreshSelect();
             this.saveState();
           }
           this.times.monsters = Date.parse(new Date());
@@ -301,7 +304,7 @@ class Player {
   }
 
   attack(others) { // redo!!
-    let br = "-------------------------------------------------------------";
+    let br = "-------------------------------------------";
     let round = 0;
     this.recFight = [];
     let yourHp = this.character.hp;
@@ -392,5 +395,22 @@ class Player {
       console.log("You reached " + this.lvl + " lvl!");
       this.lvlUp();
     }
+  }
+
+  backpackContains(item) {
+    for (let backpackItem in this.backpack) {
+      if (item.name == this.backpack[backpackItem].name) {
+        return true
+      }
+    }
+    return false
+  }
+  playerContains(item) {
+    for (let _ in this.slots[item.slot]) {
+      if (item.name == this.slots[item.slot].name) {
+        return true
+      }
+    }
+    return false
   }
 }
