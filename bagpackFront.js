@@ -1,9 +1,10 @@
 let invSelected;
 
 function showPlayer() {
+  $("#textBox").css('height', '1px');
   blank();
   addBackButton();
-  changeBackground("blank.jpg");
+  changeBackground("images/blank.jpg");
   invSelected = 0;
   let parent = $("<div class='container' style='margin-top:200px;'>   <div class='row' id='invent'>   </div>   <div id='invBtns' style='margin-top: 510px;'class='row'> </div>    </div>");
   $("#screen").append(parent);
@@ -41,7 +42,6 @@ function changeInvItem() {
 
   }
 }
-
 
 function forwardIBtn() {
   $("#invent").append($("<button class='btn btn-dark' style='margin-left:80px; margin-top:510px'> -> </button>").click(() => {

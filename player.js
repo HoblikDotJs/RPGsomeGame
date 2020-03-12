@@ -303,7 +303,7 @@ class Player {
     });
   }
 
-  attack(others) { // redo!!
+  attack(others) {
     let br = "-------------------------------------------";
     let round = 0;
     this.recFight = [];

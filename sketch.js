@@ -110,8 +110,8 @@ function showQuests() {
 	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (s) => {
 		let oldTime = s.val();
 		let newTime = Date.parse(new Date());
-		if (newTime - oldTime > player.onQuest) { // player finished the quest
-			if (player.onQuest) {
+		if (newTime - oldTime > player.onQuest) {
+			if (player.onQuest) { // player finished the quest and now its fight time!
 				for (let q in player.questAvailable) {
 					if (player.questAvailable[q].sel) {
 						player.doQuest(player.questAvailable[q]);
@@ -120,7 +120,7 @@ function showQuests() {
 				blank();
 				changeBackground("images/blank.jpg");
 				playFight(false);
-			} else { // selecting quest
+			} else { // selecting a quest and quests are shown
 				blank();
 				changeBackground("images/blank.jpg");
 				addBackButton();
@@ -155,11 +155,11 @@ function showQuests() {
 					showQuests();
 				}));
 			}
-		} else { // player is in quest
+		} else { // player is in quest and waiting screen is shown
 			blank();
 			addBackButton();
 			changeBackground("images/blank.jpg");
-			$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
+			$("#screen").append($("<center><p id='pbTime' style=''> </p></center>"));
 			$("#screen").append(progressBarCode);
 			let time = (player.onQuest - (newTime - oldTime)) / 1000
 			let min = Math.floor(time / 60);
@@ -180,7 +180,7 @@ function arenaFight() {
 		playFight();
 	} else {
 		addBackButton();
-		$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
+		$("#screen").append($("<center><p id='pbTime' style=''> </p></center>"));
 		$("#screen").append(progressBarCode);
 		let sec = times.arenaS;
 		let min = times.arenaM;
@@ -199,7 +199,7 @@ function fightMonsters() {
 		playFight();
 	} else {
 		addBackButton();
-		$("#screen").append($("<center><p id='pbTime' style='margin: auto'> </p></center>"));
+		$("#screen").append($("<center><p id='pbTime' style=''> </p></center>"));
 		$("#screen").append(progressBarCode);
 		let sec = times.monsterS;
 		let min = times.monsterM;
@@ -211,7 +211,7 @@ function fightMonsters() {
 }
 
 //-----------------------------------------------------------------------------------------
-// 																		HELPING FUNCTIONS
+// 							HELPING FUNCTIONS
 function printScreen(thing, deleting, fame) { //str/bool
 	if (typeof thing == "string") {
 		if (deleting == true || deleting == undefined) {
