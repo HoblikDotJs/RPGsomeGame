@@ -34,7 +34,7 @@ function changeSelItem() {
     titleColor = "MediumSpringGreen"
   }
   if (player.shopItems[selected].price >= 500000) {
-    titleColor = "Indigo"
+    titleColor = "DeepPink"
   }
 
   let itemTitleHTML = $("<center><b><p style='height:65px; font-size: 40px; margin-top:15px;'>" + itemName + "</p></b></center>")
