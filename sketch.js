@@ -24,6 +24,18 @@ let screenButtons = {
 	fameBtn: undefined,
 	questBtn: undefined,
 }
+/*
+TODO
+
+	SHOP DISPLAY BUG
+	1 SPELL SLOT, FIREBALL - UPGRADES //// MAGIC RESISTANCE LIKE ARMOR FOR SPELLS
+	BOT only attack
+	HEALING BTN WITH POTIONS - 20%HP UP (MAX / INGAME?)
+	
+
+
+
+*/
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
