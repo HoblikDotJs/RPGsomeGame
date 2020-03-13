@@ -251,19 +251,23 @@ class Player {
         firebase.database().ref("users").once("value").then((u) => {
           let userObj = u.val();
           let enemy = pickRandomEnemy(userObj, this.name);
-          if (this.attack(enemy)) {
-            this.gold += 10;
-            this.fame += 1;
-            this.xp += enemy.lvl * 5;
-          } else {
-            firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
-              return gold += 10;
-            });
-            firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
-              return fame += 1;
-            });
-            firebase.database().ref("users/" + enemy.name + "/messages/" + this.name).set("You won battle with " + this.recFight);
-          }
+          this.attack(enemy).then((result) => {
+            if (result) {
+              console.log("you won!!")
+              this.gold += 10;
+              this.fame += 1;
+              this.xp += enemy.lvl * 5;
+            } else {
+              console.log("you lost!!")
+              firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
+                return gold += 10;
+              });
+              firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
+                return fame += 1;
+              });
+              firebase.database().ref("users/" + enemy.name + "/messages/" + this.name).set("You won battle with " + this.recFight);
+            }
+          });
         });
         this.times.arena = Date.parse(new Date());
         this.saveState();
@@ -280,22 +284,24 @@ class Player {
         if (this.bossLvl >= enemies.length) {
           printScreen("No enemies left");
         } else {
-          if (this.attack(enemies[this.bossLvl])) {
-            let drop = enemies[this.bossLvl].reward;
-            let slot;
-            for (let part in weapons) {
-              if (weapons[part][drop]) {
-                slot = part;
+          this.attack(enemies[this.bossLvl]).then((result) => {
+            if (result) {
+              let drop = enemies[this.bossLvl].reward;
+              let slot;
+              for (let part in weapons) {
+                if (weapons[part][drop]) {
+                  slot = part;
+                }
               }
+              this.backpack.push(weapons[slot][drop]);
+              console.log("You won " + enemies[this.bossLvl].reward);
+              console.log("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
+              this.gold += parseInt(enemies[this.bossLvl].gold);
+              this.xp += this.bossLvl * 10;
+              this.bossLvl++;
+              this.saveState();
             }
-            this.backpack.push(weapons[slot][drop]);
-            console.log("You won " + enemies[this.bossLvl].reward);
-            console.log("You won " + parseInt(enemies[this.bossLvl].gold) + " gold");
-            this.gold += parseInt(enemies[this.bossLvl].gold);
-            this.xp += this.bossLvl * 10;
-            this.bossLvl++;
-            this.saveState();
-          }
+          });
           this.times.monsters = Date.parse(new Date());
           firebase.database().ref("users/" + this.name + "/times/monsters").set(this.times.monsters);
         }
@@ -303,8 +309,94 @@ class Player {
     });
   }
 
-  attack(others) {
-    let br = "-------------------------------------------";
+  attack(others) { // quests! crits
+    return new Promise((resolve) => {
+      let END = false;
+      let enemy = others;
+      let me = this;
+      let delay = 5000;
+      let myTurn = true;
+      let timeOut = false
+      let fight_round = 1
+      let myHp = parseInt(me.character.hp);
+      let enemyHp = parseInt(others.character.hp);
+
+      let attackBtn = $("<button>ATTACK</button>").click(() => {
+        if (myTurn && !END) {
+          console.log("your turn hit")
+          timeOut = clearTimeout(timeOut);
+          timeOut = false;
+          enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
+          myTurn = false
+          if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
+            myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2
+          }
+          myTurn = true;
+          fight_round += 1;
+          setT();
+          console.log("your HP: " + myHp, "enemy HP:" + enemyHp);
+        }
+        if ((myHp <= 0 || enemyHp < 0) && !END) {
+          timeOut = clearTimeout(timeOut);
+          console.log("ENDED");
+          addBackButton();
+          END = true;
+          if (myHp <= 0) {
+            resolve(false);
+          }
+          if (enemyHp < 0) {
+            resolve(true);
+          }
+        }
+      });
+      console.log("your HP: " + myHp, "enemy HP:" + enemyHp);
+      $("#screen").append(attackBtn);
+
+      function setT() {
+        if (timeOut == false) {
+          console.log("set timeout!")
+          timeOut = setTimeout(() => {
+            console.log("AUTOATTACK");
+            attackBtn.trigger("click");
+          }, delay);
+        }
+      }
+      setT();
+    });
+  }
+
+  //-------------------------------------------------------------------------------------
+  //                                    HELP FUNCTIONS
+  lvlUp() {
+    if (this.xp > Math.pow(3, this.lvl)) {
+      this.xp -= Math.pow(3, this.lvl);
+      this.gold += Math.pow(2, this.lvl);
+      this.lvl++;
+      console.log("You received " + Math.pow(2, this.lvl) + " gold!");
+      console.log("You reached " + this.lvl + " lvl!");
+      this.lvlUp();
+    }
+  }
+  backpackContains(item) {
+    for (let backpackItem in this.backpack) {
+      if (item.name == this.backpack[backpackItem].name) {
+        return true
+      }
+    }
+    return false
+  }
+  playerContains(item) {
+    for (let _ in this.slots[item.slot]) {
+      if (item.name == this.slots[item.slot].name) {
+        return true
+      }
+    }
+    return false
+  }
+}
+
+/*
+ let br = "-------------------------------------------";
     let round = 0;
     this.recFight = [];
     let yourHp = this.character.hp;
@@ -382,35 +474,4 @@ class Player {
         this.recFight.push(others.name + " missed");
       }
     }
-  }
-
-  //-------------------------------------------------------------------------------------
-  //                                    HELP FUNCTIONS
-  lvlUp() {
-    if (this.xp > Math.pow(3, this.lvl)) {
-      this.xp -= Math.pow(3, this.lvl);
-      this.gold += Math.pow(2, this.lvl);
-      this.lvl++;
-      console.log("You received " + Math.pow(2, this.lvl) + " gold!");
-      console.log("You reached " + this.lvl + " lvl!");
-      this.lvlUp();
-    }
-  }
-
-  backpackContains(item) {
-    for (let backpackItem in this.backpack) {
-      if (item.name == this.backpack[backpackItem].name) {
-        return true
-      }
-    }
-    return false
-  }
-  playerContains(item) {
-    for (let _ in this.slots[item.slot]) {
-      if (item.name == this.slots[item.slot].name) {
-        return true
-      }
-    }
-    return false
-  }
-}
+*/

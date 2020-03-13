@@ -25,16 +25,11 @@ let screenButtons = {
 	questBtn: undefined,
 }
 /*
-TODO
-
-	SHOP DISPLAY BUG
-	1 SPELL SLOT, FIREBALL - UPGRADES //// MAGIC RESISTANCE LIKE ARMOR FOR SPELLS
-	BOT only attack
-	HEALING BTN WITH POTIONS - 20%HP UP (MAX / INGAME?)
+TODO:
+1 SPELL SLOT, FIREBALL - UPGRADES //// MAGIC RESISTANCE LIKE ARMOR FOR SPELLS
+BOT only attack
+HEALING BTN WITH POTIONS - 20%HP UP (MAX)
 	
-
-
-
 */
 
 //--------------------------------------------------------------------------------------------
@@ -56,7 +51,6 @@ function loadWorld() {
 	$("#selector").empty();
 	$("#textBox").css('height', '350px');
 	blank();
-	player.playFight = [];
 	let parent = $("#buttons");
 	screenButtons.signout = $("<button class='btn btn-dark' id='signoutButt'>Sign Out</button>").click(signOut);
 	screenButtons.arenaBtn = $("<button class='btn btn-dark' id='arenaButt'>Arena</button>").click(arenaFight);
@@ -131,7 +125,6 @@ function showQuests() {
 				}
 				blank();
 				changeBackground("images/blank.jpg");
-				playFight(false);
 			} else { // selecting a quest and quests are shown
 				blank();
 				changeBackground("images/blank.jpg");
@@ -189,7 +182,6 @@ function arenaFight() {
 	changeBackground("blank.jpg");
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
-		playFight();
 	} else {
 		addBackButton();
 		$("#screen").append($("<center><p id='pbTime' style=''> </p></center>"));
@@ -208,7 +200,6 @@ function fightMonsters() {
 	changeBackground("images/blank.jpg");
 	if ((times.monsterM == undefined && times.monsterS == undefined) || (times.monsterM == 0 && times.monsterS == 0)) {
 		player.fightNext();
-		playFight();
 	} else {
 		addBackButton();
 		$("#screen").append($("<center><p id='pbTime' style=''> </p></center>"));
@@ -250,32 +241,6 @@ function blank() { // deletes all el.
 	$("#selector").empty();
 	$("#textBox").empty();
 	emptyScreen();
-}
-
-function playFight(bool) {
-	let del = bool || false;
-	if (player.recFight.length != 0) {
-		if (indexPlayFight == 0) {
-			speedPlayFight = 500;
-			$("#buttons").append($("<button class='btn btn-dark' id='skipB'>Skip</button>").click(() => {
-				speedPlayFight = 1;
-			}));
-		}
-		let fight = player.recFight;
-		player.recFight;
-		printScreen(fight[indexPlayFight], del);
-		indexPlayFight++;
-		if (indexPlayFight != fight.length) {
-			setTimeout(playFight, speedPlayFight);
-		} else {
-			player.recFight = [];
-			indexPlayFight = 0;
-			$("#buttons").empty();
-			addBackButton();
-		}
-	} else {
-		setTimeout(playFight, 500);
-	}
 }
 
 function addBackButton() {
