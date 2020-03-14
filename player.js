@@ -320,6 +320,8 @@ class Player {
 
   attack(others) { //crits, timer bar
     return new Promise((resolve) => {
+      let timeInterval;
+      let timeOnBar = -1
       let attackBtn, regenBtn, spellBtn;
       let END = false;
       let enemy = others;
@@ -332,9 +334,10 @@ class Player {
       attackButtonCreate();
       regenButtonCreate();
       spellButtonCreate();
+      roundTimeBarCreate();
       myHpBarCreate();
       enemyHpBarCreate();
-      // 2x zmenseno
+
       function myHpBarCreate() {
         let _ = $('<div class="progress" style="width:300px; height:30px; margin: auto;margin-top:15px;"> <div class="progress-bar" id="myHpB" style="width:100%;  background-color: DarkSeaGreen; aria-valuemin ="0";aria-valuemax="100""></div></div>');
         $("#screen").append(_)
@@ -345,9 +348,16 @@ class Player {
         $("#screen").append(_)
       }
 
+      function roundTimeBarCreate() {
+        let _ = $('<div class="progress" style="width:300px; height:30px; margin: auto;margin-top:15px;"> <div class="progress-bar" id="roundTimeBar" style="width:100%; background-color: Gray; aria-valuemin ="0";aria-valuemax="100""></div></div>');
+        $("#screen").append(_)
+      }
+
       function regenButtonCreate() {
         regenBtn = $("<button>REGEN</button>").click(() => {
           if (!END) {
+            timeOnBar = -1;
+            timeInterval = clearInterval(timeInterval);
             timeOut = clearTimeout(timeOut);
             timeOut = false;
             myHp += parseInt(me.character.regen); // potions later
@@ -364,6 +374,8 @@ class Player {
       function spellButtonCreate() {
         spellBtn = $("<button>SPELL</button>").click(() => {
           if (!END) {
+            timeOnBar = -1;
+            timeInterval = clearInterval(timeInterval);
             timeOut = clearTimeout(timeOut);
             timeOut = false;
             enemyHp -= parseInt(me.spellSlot[0].damage) - parseInt(enemy.character.magicResistance) / 2;
@@ -380,6 +392,8 @@ class Player {
       function attackButtonCreate() {
         attackBtn = $("<button>ATTACK</button>").click(() => {
           if (!END) {
+            timeOnBar = -1;
+            timeInterval = clearInterval(timeInterval);
             timeOut = clearTimeout(timeOut);
             timeOut = false;
             if (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2 > 0) {
@@ -412,14 +426,20 @@ class Player {
 
       function checkIfDead() {
         if (fight_round >= 100 && !END) {
+          timeInterval = clearInterval(timeInterval);
           console.log("fightRounds");
           console.log("Its a draw");
           timeOut = clearTimeout(timeOut);
+          attackBtn.remove();
+          regenBtn.remove();
+          spellBtn.remove();
           addBackButton();
+          $("#screen").append("<b><p>Maximum rounds reached</p></b>")
           END = true;
           resolve(false);
         }
         if ((myHp <= 0 || enemyHp < 0) && !END) {
+          timeInterval = clearInterval(timeInterval);
           timeOut = clearTimeout(timeOut);
           attackBtn.remove();
           regenBtn.remove();
@@ -441,6 +461,11 @@ class Player {
 
       function setT() {
         if (timeOut == false) {
+          timeInterval = setInterval(() => {
+            timeOnBar++;
+            let w = 100 - ((timeOnBar / ((delay / 1000) - 1)) * 100)
+            $("#roundTimeBar").css("width", w + "%");
+          }, 1000);
           timeOut = setTimeout(() => {
             console.log("AUTOATTACK");
             attackBtn.trigger("click");
