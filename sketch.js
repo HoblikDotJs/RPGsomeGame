@@ -29,7 +29,6 @@ TODO:
 1 SPELL SLOT, FIREBALL - UPGRADES //// MAGIC RESISTANCE LIKE ARMOR FOR SPELLS
 BOT only attack
 HEALING BTN WITH POTIONS - 20%HP UP (MAX)
-	
 */
 
 //--------------------------------------------------------------------------------------------
@@ -118,13 +117,13 @@ function showQuests() {
 		let newTime = Date.parse(new Date());
 		if (newTime - oldTime > player.onQuest) {
 			if (player.onQuest) { // player finished the quest and now its fight time!
+				blank();
+				changeBackground("images/blank.jpg");
 				for (let q in player.questAvailable) {
 					if (player.questAvailable[q].sel) {
 						player.doQuest(player.questAvailable[q]);
 					}
 				}
-				blank();
-				changeBackground("images/blank.jpg");
 			} else { // selecting a quest and quests are shown
 				blank();
 				changeBackground("images/blank.jpg");
@@ -179,7 +178,7 @@ function showQuests() {
 
 function arenaFight() {
 	blank();
-	changeBackground("blank.jpg");
+	changeBackground("images/blank.jpg");
 	if ((times.arenaM == undefined && times.arenaS == undefined) || (times.arenaM == 0 && times.arenaS == 0)) {
 		player.fightInArena();
 	} else {

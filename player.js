@@ -21,6 +21,11 @@ class newPlayer {
     this.messages = [];
     this.questAvailable = [];
     this.character = baseCharacter;
+    let fireball = {
+      "damage": 20,
+      "name": "Fireball"
+    }
+    this.spellSlot = [fireball];
     this.shopItems = [];
     this.upgradeCharacter = {
       hp: 0,
@@ -61,6 +66,7 @@ class Player {
     this.fame = obj.fame;
     this.password = obj.password;
     this.slots = obj.slots;
+    this.spellSlot = obj.spellSlot;
     this.backpack = obj.backpack || [];
     this.messages = obj.messages || [];
     this.shopItems = obj.shopItems;
@@ -174,12 +180,14 @@ class Player {
   //                                        QUESTS
   doQuest(quest) {
     let NPC = this.makeNpc();
-    if (this.attack(NPC)) {
-      this.xp += quest.xpReward;
-      this.gold += quest.goldReward;
-    } else {
-      this.xp += this.lvl;
-    }
+    this.attack(NPC).then((result) => {
+      if (result) {
+        this.xp += quest.xpReward;
+        this.gold += quest.goldReward;
+      } else {
+        this.xp += this.lvl;
+      }
+    })
     this.questAvailable = randomQuests(3);
     this.onQuest = 0;
     this.saveState();
@@ -252,8 +260,8 @@ class Player {
           let userObj = u.val();
           let enemy = pickRandomEnemy(userObj, this.name);
           this.attack(enemy).then((result) => {
+            console.log(result)
             if (result) {
-              console.log("you won!!")
               this.gold += 10;
               this.fame += 1;
               this.xp += enemy.lvl * 5;
@@ -285,6 +293,7 @@ class Player {
           printScreen("No enemies left");
         } else {
           this.attack(enemies[this.bossLvl]).then((result) => {
+            console.log(result);
             if (result) {
               let drop = enemies[this.bossLvl].reward;
               let slot;
@@ -309,52 +318,124 @@ class Player {
     });
   }
 
-  attack(others) { // quests! crits
+  attack(others) { //crits, timer bar
     return new Promise((resolve) => {
+      let attackBtn, regenBtn, spellBtn;
       let END = false;
       let enemy = others;
       let me = this;
       let delay = 5000;
-      let myTurn = true;
       let timeOut = false
       let fight_round = 1
       let myHp = parseInt(me.character.hp);
       let enemyHp = parseInt(others.character.hp);
+      attackButtonCreate();
+      regenButtonCreate();
+      spellButtonCreate();
+      myHpBarCreate();
+      enemyHpBarCreate();
+      // 2x zmenseno
+      function myHpBarCreate() {
+        let _ = $('<div class="progress" style="width:300px; height:30px; margin: auto;margin-top:15px;"> <div class="progress-bar" id="myHpB" style="width:100%;  background-color: DarkSeaGreen; aria-valuemin ="0";aria-valuemax="100""></div></div>');
+        $("#screen").append(_)
+      }
 
-      let attackBtn = $("<button>ATTACK</button>").click(() => {
-        if (myTurn && !END) {
-          console.log("your turn hit")
-          timeOut = clearTimeout(timeOut);
-          timeOut = false;
-          enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
-          myTurn = false
-          if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
-            myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2
+      function enemyHpBarCreate() {
+        let _ = $('<div class="progress" style="width:300px; height:30px; margin: auto;margin-top:15px;"> <div class="progress-bar" id="enemyHpB" style="width:100%; background-color: Crimson; aria-valuemin ="0";aria-valuemax="100""></div></div>');
+        $("#screen").append(_)
+      }
+
+      function regenButtonCreate() {
+        regenBtn = $("<button>REGEN</button>").click(() => {
+          if (!END) {
+            timeOut = clearTimeout(timeOut);
+            timeOut = false;
+            myHp += parseInt(me.character.regen); // potions later
+            console.log("REGEN HP: " + parseInt(me.character.regen));
+            checkIfDead();
+            enemyHit();
+            checkIfDead();
+            setT();
           }
-          myTurn = true;
-          fight_round += 1;
-          setT();
-          console.log("your HP: " + myHp, "enemy HP:" + enemyHp);
+        });
+        $("#screen").append(regenBtn);
+      }
+
+      function spellButtonCreate() {
+        spellBtn = $("<button>SPELL</button>").click(() => {
+          if (!END) {
+            timeOut = clearTimeout(timeOut);
+            timeOut = false;
+            enemyHp -= parseInt(me.spellSlot[0].damage) - parseInt(enemy.character.magicResistance) / 2;
+            console.log("SPELL DMG: " + (parseInt(me.spellSlot[0].damage) - parseInt(enemy.character.magicResistance) / 2));
+            checkIfDead();
+            enemyHit();
+            checkIfDead();
+            setT();
+          }
+        });
+        $("#screen").append(spellBtn);
+      }
+
+      function attackButtonCreate() {
+        attackBtn = $("<button>ATTACK</button>").click(() => {
+          if (!END) {
+            timeOut = clearTimeout(timeOut);
+            timeOut = false;
+            if (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2 > 0) {
+              enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
+              console.log("ATTACK DMG: " + (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2));
+            } else {
+              console.log("Your DMG: " + parseInt(me.character.damage), "His EFA: " + parseInt(enemy.character.armor) / 2)
+            }
+            checkIfDead();
+            enemyHit();
+            checkIfDead();
+            setT();
+          }
+        });
+        $("#screen").append(attackBtn);
+      }
+
+      function enemyHit() {
+        if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
+          myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2
+        }
+        fight_round += 1;
+        console.log("your HP: " + myHp, "enemy HP:" + enemyHp, "round :" + fight_round);
+        let enemyRemainingHp = (enemyHp / enemy.character.hp) * 100
+        $("#enemyHpB").css("width", enemyRemainingHp + "%")
+        let myRemainingHp = (myHp / me.character.hp) * 100
+        $("#myHpB").css("width", myRemainingHp + "%")
+      }
+
+
+      function checkIfDead() {
+        if (fight_round >= 100 && !END) {
+          console.log("fightRounds");
+          console.log("Its a draw");
+          timeOut = clearTimeout(timeOut);
+          addBackButton();
+          END = true;
+          resolve(false);
         }
         if ((myHp <= 0 || enemyHp < 0) && !END) {
           timeOut = clearTimeout(timeOut);
-          console.log("ENDED");
           addBackButton();
           END = true;
           if (myHp <= 0) {
+            console.log("You lost");
             resolve(false);
           }
           if (enemyHp < 0) {
+            console.log("You won");
             resolve(true);
           }
         }
-      });
-      console.log("your HP: " + myHp, "enemy HP:" + enemyHp);
-      $("#screen").append(attackBtn);
+      }
 
       function setT() {
         if (timeOut == false) {
-          console.log("set timeout!")
           timeOut = setTimeout(() => {
             console.log("AUTOATTACK");
             attackBtn.trigger("click");
