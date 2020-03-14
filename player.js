@@ -421,13 +421,18 @@ class Player {
         }
         if ((myHp <= 0 || enemyHp < 0) && !END) {
           timeOut = clearTimeout(timeOut);
+          attackBtn.remove();
+          regenBtn.remove();
+          spellBtn.remove();
           addBackButton();
           END = true;
           if (myHp <= 0) {
+            $("#screen").append("<b><p>YOU LOST</p></b>")
             console.log("You lost");
             resolve(false);
           }
           if (enemyHp < 0) {
+            $("#screen").append("<b><p>YOU WON</p></b>")
             console.log("You won");
             resolve(true);
           }
