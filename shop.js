@@ -4,7 +4,6 @@ function redirectToShop() {
   blank();
   changeBackground("images/shop.jpg");
   addBackButton();
-  $("#textBox").css('height', '1px');
   selected = 0;
   let parent = $("<div class='container' style='margin-top:225px;'><div class='row' id='shopItem'></div><div id='shopBtns'style='margin-top:572px;'class='row'></div></div>");
   $("#screen").append(parent);

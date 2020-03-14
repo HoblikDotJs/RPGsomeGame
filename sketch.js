@@ -26,13 +26,17 @@ let screenButtons = {
 }
 /*
 TODO:
-1 SPELL SLOT, FIREBALL - UPGRADES //// MAGIC RESISTANCE LIKE ARMOR FOR SPELLS
-BOT only attack
+FIREBALL - UPGRADES ////
 HEALING BTN WITH POTIONS - 20%HP UP (MAX)
+ABSOLUTE POSITIONS
+QUESTS LAYOUT
+INVENTORY LAYOUT
+FAME TREE
 */
 
 //--------------------------------------------------------------------------------------------
 //                                   MAIN FUNCTION
+// loads weapons, when site loads
 function setup() {
 	$.getJSON("weapons.json", function (json) {
 		weapons = json;
@@ -42,13 +46,13 @@ function setup() {
 }
 
 //-----------------------------------------------------------------------------------------
+//MAINSCREEN, sets all things, append all buttons...
 function loadWorld() {
 	clearTimeout(loadingTimeout);
 	changeBackground("images/village.jpg")
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
-	$("#textBox").css('height', '350px');
 	blank();
 	let parent = $("#buttons");
 	screenButtons.signout = $("<button class='btn btn-dark' id='signoutButt'>Sign Out</button>").click(signOut);
@@ -75,6 +79,8 @@ function loadWorld() {
 //---------------------------------------------------------------------------------------
 //                                       BUTTON CLICKS
 
+
+// shows the "tree" of best players and their fame
 function showBestPlayers() {
 	console.log("Currently unavailable :(");
 	blank();
@@ -107,10 +113,11 @@ function showBestPlayers() {
 			bp.push(bestPlayers[2].name);
 			bpf.push(bestPlayers[2].fame);
 		}
-		printScreen(bp, bpf);
+		console.log(bp, bpf);
 	});*/
 }
 
+// redirect to quests
 function showQuests() {
 	firebase.database().ref("users/" + player.name + "/times/quest").once("value", (s) => {
 		let oldTime = s.val();
@@ -176,6 +183,7 @@ function showQuests() {
 	});
 }
 
+// fight in arena
 function arenaFight() {
 	blank();
 	changeBackground("images/blank.jpg");
@@ -194,6 +202,7 @@ function arenaFight() {
 	}
 }
 
+// fight the next monster 
 function fightMonsters() {
 	blank();
 	changeBackground("images/blank.jpg");
@@ -214,38 +223,26 @@ function fightMonsters() {
 
 //-----------------------------------------------------------------------------------------
 // 							HELPING FUNCTIONS
-function printScreen(thing, deleting, fame) { //str/bool
-	if (typeof thing == "string") {
-		if (deleting == true || deleting == undefined) {
-			emptyScreen();
-		}
-		$("#textBox").append("<b><p> " + thing + " </p></b>");
-	}
-	if (typeof thing == "object") {
-		$("#textBox").empty();
-		for (let val in thing) {
-			let place = parseInt(val) + 1;
-			$("#textBox").append("<b><p> " + place + " : " + thing[val] + " (" + fame[val] + ")" + " </p></b>");
-		}
-	}
-}
 
+// empty the screen element 
 function emptyScreen() {
 	$("#screen").empty();
 }
 
-function blank() { // deletes all el.
+//deletes all elements on site
+function blank() {
 	$("#buttons").empty();
 	$("#shopSel").empty();
 	$("#selector").empty();
-	$("#textBox").empty();
 	emptyScreen();
 }
 
+//adds a backbutton to #screen
 function addBackButton() {
 	$("#buttons").append($("<button class='btn btn-dark' id='bb'>Back</button>").click(loadWorld));
 }
 
+//creates num of quest with random rewards
 function randomQuests(num) {
 	let quests = [];
 	let returnList = [];
@@ -260,20 +257,22 @@ function randomQuests(num) {
 	for (let j = 0; j < returnList.length; j++) {
 		returnList[j].goldReward = 1 + Math.floor(Math.random() * player.lvl * 12);
 		returnList[j].xpReward = Math.floor(1 + Math.random() * player.lvl * 7);
-		returnList[j].time = (returnList[j].goldReward + returnList[j].xpReward) * 60000;
+		returnList[j].time = Math.floor(((returnList[j].goldReward + returnList[j].xpReward) * 60000) * (player.character.weight / 100));
 	}
 	return returnList;
 }
 
+//changes background to image located on str
 function changeBackground(str) {
 	$("body").css("background-image", `url(${str})`);
 }
 
+//updates all times(quest time, arena time...) 
 function updateTimes(str) {
 	firebase.database().ref("users/" + player.name + "/times").once("value", (data) => {
 		if (str === "load") { // just for loading into the game 
 			loadWorld();
-			//	printScreen("You've been logged as " + myName);
+			//	console.log("You've been logged as " + myName);
 			setInterval(updateTimes, 1000);
 		}
 		let serverTimes = data.val();
@@ -329,6 +328,7 @@ function updateTimes(str) {
 	});
 }
 
+//takes a programming string and replace it with actual word
 function con(str) {
 	let string;
 	switch (str) {

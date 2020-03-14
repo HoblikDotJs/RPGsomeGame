@@ -1,7 +1,6 @@
 let invSelected;
 
 function showPlayer() {
-  $("#textBox").css('height', '1px');
   blank();
   addBackButton();
   changeBackground("images/blank.jpg");
@@ -10,7 +9,9 @@ function showPlayer() {
   $("#screen").append(parent);
   $("#invent").append($("<div class='col-lg-6' id='stats' style='position: absolute; border:solid black; height: 500px; width: 500px; '> </div>"));
   $("#invent").append($("<div class='col-lg-6' id='me' style='position: absolute; border:solid grey; height: 500px; width: 500px; margin-left: 550px;'> </div>"));
-  changeInvItem();
+  if (player.backpack.length > 0) {
+    changeInvItem();
+  }
   backwardIBtn();
   putOnButton();
   forwardIBtn();

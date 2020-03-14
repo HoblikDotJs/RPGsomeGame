@@ -57,7 +57,7 @@
             myName = myName.split(" ")[0];
             for (let user in users) {
               if (users[user].name == myName) {
-                printScreen("Name was already taken");
+                console.log("Name was already taken");
                 return
               }
             }
@@ -66,7 +66,7 @@
           }
           if (myName == undefined || myName == null || myName == "undefined" || myName == "null" || myName ==
             "" || myName == " ") {
-            printScreen("Name failed!");
+            console.log("Name failed!");
             return
           }
           password = profile.getId();
@@ -74,7 +74,7 @@
             if (dataS.val() == undefined || dataS.val() == null) {
               let pl = new newPlayer(myName, password);
               firebase.database().ref("users/" + myName).set(pl, () => {
-                printScreen("signUp was ok");
+                console.log("signUp was ok");
                 location.reload();
               });
             } else {
@@ -114,8 +114,6 @@
     <span id="shopSel"> </span>
   </div>
   <div id="screen">
-  </div>
-  <div id="textBox" style='height:350px;width:400px;'>
   </div>
   <style>
     @font-face {

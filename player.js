@@ -71,7 +71,6 @@ class Player {
     this.messages = obj.messages || [];
     this.shopItems = obj.shopItems;
     this.times = obj.times;
-    this.recFight = [];
     this.questAvailable = obj.questAvailable || [];
     this.readMessages();
     this.calculateCharacter();
@@ -165,12 +164,12 @@ class Player {
         let price = this.upgradeCharacter[stat] * 5;
         let ans = prompt("Do you really want to update " + stat + " for " + price + " gold y/n");
         if (ans == "y" && parseInt(this.gold) >= price) {
-          printScreen("Updating " + stat);
+          console.log("Updating " + stat);
           this.upgradeCharacter[stat] += 2;
           this.gold -= parseInt(price);
           this.saveState();
         } else {
-          printScreen("Not enough gold");
+          console.log("Not enough gold");
         }
       }
     }
@@ -228,7 +227,7 @@ class Player {
       this.backpack.splice(this.backpack.indexOf(object), 1);
       this.backpack.push(prevItem);
       this.calculateCharacter();
-      // printScreen("You just putted " + object.name + " on.");
+      // console.log("You just putted " + object.name + " on.");
       console.log(this.character);
       console.log(this.slots);
       this.saveState();
@@ -260,11 +259,11 @@ class Player {
           let userObj = u.val();
           let enemy = pickRandomEnemy(userObj, this.name);
           this.attack(enemy).then((result) => {
-            console.log(result)
             if (result) {
               this.gold += 10;
               this.fame += 1;
               this.xp += enemy.lvl * 5;
+              this.saveState();
             } else {
               console.log("you lost!!")
               firebase.database().ref("users/" + enemy.name + "/gold").transaction((gold) => {
@@ -273,7 +272,6 @@ class Player {
               firebase.database().ref("users/" + enemy.name + "/fame").transaction((fame) => {
                 return fame += 1;
               });
-              firebase.database().ref("users/" + enemy.name + "/messages/" + this.name).set("You won battle with " + this.recFight);
             }
           });
         });
@@ -290,10 +288,9 @@ class Player {
       let thisDate = Date.parse(new Date());
       if (thisDate - oldDate > 600000 * 6) {
         if (this.bossLvl >= enemies.length) {
-          printScreen("No enemies left");
+          console.log("No enemies left");
         } else {
           this.attack(enemies[this.bossLvl]).then((result) => {
-            console.log(result);
             if (result) {
               let drop = enemies[this.bossLvl].reward;
               let slot;
@@ -318,7 +315,7 @@ class Player {
     });
   }
 
-  attack(others) { //crits, timer bar
+  attack(others) { //crits
     return new Promise((resolve) => {
       let timeInterval;
       let timeOnBar = -1
@@ -398,9 +395,9 @@ class Player {
             timeOut = false;
             if (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2 > 0) {
               enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
-              console.log("ATTACK DMG: " + (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2));
+              console.log("YOUR ATTACK DMG: " + (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2));
             } else {
-              console.log("Your DMG: " + parseInt(me.character.damage), "His EFA: " + parseInt(enemy.character.armor) / 2)
+              console.log("Your DMG: " + parseInt(me.character.damage), "His EfA: " + parseInt(enemy.character.armor) / 2)
             }
             checkIfDead();
             enemyHit();
@@ -412,17 +409,19 @@ class Player {
       }
 
       function enemyHit() {
-        if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
-          myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2
+        if (!END) {
+          if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
+            myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2;
+            console.log("ENEMY ATTACK DMG: " + (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2));
+          }
+          fight_round += 1;
+          console.log("your HP: " + myHp, "enemy HP:" + enemyHp, "round :" + fight_round);
         }
-        fight_round += 1;
-        console.log("your HP: " + myHp, "enemy HP:" + enemyHp, "round :" + fight_round);
         let enemyRemainingHp = (enemyHp / enemy.character.hp) * 100
         $("#enemyHpB").css("width", enemyRemainingHp + "%")
         let myRemainingHp = (myHp / me.character.hp) * 100
         $("#myHpB").css("width", myRemainingHp + "%")
       }
-
 
       function checkIfDead() {
         if (fight_round >= 100 && !END) {
@@ -438,7 +437,7 @@ class Player {
           END = true;
           resolve(false);
         }
-        if ((myHp <= 0 || enemyHp < 0) && !END) {
+        if ((myHp <= 0 || enemyHp <= 0) && !END) {
           timeInterval = clearInterval(timeInterval);
           timeOut = clearTimeout(timeOut);
           attackBtn.remove();
@@ -451,7 +450,7 @@ class Player {
             console.log("You lost");
             resolve(false);
           }
-          if (enemyHp < 0) {
+          if (enemyHp <= 0) {
             $("#screen").append("<b><p>YOU WON</p></b>")
             console.log("You won");
             resolve(true);
@@ -467,7 +466,6 @@ class Player {
             $("#roundTimeBar").css("width", w + "%");
           }, 1000);
           timeOut = setTimeout(() => {
-            console.log("AUTOATTACK");
             attackBtn.trigger("click");
           }, delay);
         }
