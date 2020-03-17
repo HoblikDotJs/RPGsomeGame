@@ -284,6 +284,7 @@ class Player {
     });
   }
 
+
   fightNext() {
     firebase.database().ref("users/" + this.name + "/times/monsters").on("value", (data) => {
       let oldDate = data.val();
