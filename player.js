@@ -203,6 +203,7 @@ class Player {
     return new Enemy(npcName, npcCharacter);
   }
 
+
   //-------------------------------------------------------------------------------------
   saveState() {
     this.lvlUp();
