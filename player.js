@@ -315,7 +315,7 @@ class Player {
     });
   }
 
-  attack(others) { //crits
+  attack(others) { //spell regen hp
     return new Promise((resolve) => {
       let timeInterval;
       let timeOnBar = -1
@@ -393,11 +393,25 @@ class Player {
             timeInterval = clearInterval(timeInterval);
             timeOut = clearTimeout(timeOut);
             timeOut = false;
-            if (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2 > 0) {
-              enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
-              console.log("YOUR ATTACK DMG: " + (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2));
-            } else {
-              console.log("Your DMG: " + parseInt(me.character.damage), "His EfA: " + parseInt(enemy.character.armor) / 2)
+            let r = Math.random() * 100;
+            let luck = me.character.luck;
+            if (r < luck / 2) { //CRIT
+              let dmg = Math.floor((parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2) * (r / 100 + 1));
+              if (dmg > 0) {
+                enemyHp -= dmg;
+                console.log("YOUR CRIT DMG: " + dmg);
+              } else {
+                console.log("Your DMG: " + dmg, "His AfA: " + parseInt(enemy.character.armor) / 2);
+              }
+            } else if (r < luck) { //NORMAL
+              if (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2 > 0) {
+                enemyHp -= parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2;
+                console.log("YOUR ATTACK DMG: " + (parseInt(me.character.damage) - parseInt(enemy.character.armor) / 2));
+              } else {
+                console.log("YOUR DMG: " + parseInt(me.character.damage), "His EfA: " + parseInt(enemy.character.armor) / 2)
+              }
+            } else { //MISS
+              console.log("YOU MISSED");
             }
             checkIfDead();
             enemyHit();
@@ -410,9 +424,25 @@ class Player {
 
       function enemyHit() {
         if (!END) {
-          if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 >= 0) {
-            myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2;
-            console.log("ENEMY ATTACK DMG: " + (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2));
+          let r = Math.random() * 100;
+          let luck = enemy.character.luck;
+          if (r < luck / 2) { //CRIT
+            let dmg = Math.floor((parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2) * (r / 100 + 1));
+            if (dmg > 0) {
+              myHp -= dmg;
+              console.log("ENEMY CRIT DMG: " + dmg);
+            } else {
+              console.log("ENEMY DMG: " + dmg, "Your AfA: " + parseInt(me.character.armor) / 2);
+            }
+          } else if (r < luck) { //NORMAL
+            if (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2 > 0) {
+              myHp -= parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2;
+              console.log("ENEMY ATTACK DMG: " + (parseInt(enemy.character.damage) - parseInt(me.character.armor) / 2));
+            } else {
+              console.log("ENEMY DMG: " + parseInt(enemy.character.damage), "Your EfA: " + parseInt(me.character.armor) / 2)
+            }
+          } else { //MISS
+            console.log("ENEMY MISSED");
           }
           fight_round += 1;
           console.log("your HP: " + myHp, "enemy HP:" + enemyHp, "round :" + fight_round);
@@ -504,7 +534,7 @@ class Player {
   }
 }
 
-/*
+/* 
  let br = "-------------------------------------------";
     let round = 0;
     this.recFight = [];

@@ -72,7 +72,7 @@ function forwardSBtn() {
 }
 
 function backwardSBtn() {
-  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:-82px'> <- </button>").click(() => {
+  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:-82px'> <- </button>").css('position', 'absolute').click(() => {
     selected--;
     if (selected < 0) {
       selected = player.shopItems.length - 1;
@@ -87,13 +87,13 @@ function showShop() {
 }
 
 function buyButton() {
-  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:147px'>Buy</button>").appendTo("#shopBtns").click(() => {
+  $("#shopBtns").append($("<button class='btn btn-dark' style='margin-left:366px'>Buy</button>").css('position', 'absolute').appendTo("#shopBtns").click(() => {
     player.buyFromShop(selected);
   }));
 }
 
 function reloadShopBtn() {
-  let reloadShopBtn = $("<button id='reloadShop' class='btn btn-dark' style='margin-left:335'>Reload</button>").appendTo("#shopBtns");
+  let reloadShopBtn = $("<button id='reloadShop' class='btn btn-dark' style='margin-left:631px'>Reload</button>").css('position', 'absolute').appendTo("#shopBtns");
   reloadShopBtn.mouseover(showShopTime);
   reloadShopBtn.mouseout(showShopTitle)
   reloadShopBtn.click(() => {
