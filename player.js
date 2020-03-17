@@ -236,6 +236,7 @@ class Player {
   }
 
 
+
   readMessages() { // TODO!!
     for (let i = 0; i < this.messages.length; i++) {
       console.log(this.messages[i]);
@@ -318,7 +319,7 @@ class Player {
     });
   }
 
-  attack(others) { //spell regen hp
+  attack(others) { //spell regen positive hp
     return new Promise((resolve) => {
       let timeInterval;
       let timeOnBar = -1
