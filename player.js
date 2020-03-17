@@ -235,6 +235,7 @@ class Player {
     }
   }
 
+
   readMessages() { // TODO!!
     for (let i = 0; i < this.messages.length; i++) {
       console.log(this.messages[i]);
